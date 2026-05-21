@@ -95,6 +95,11 @@ export type RecommendationConfidence =
   | "medium"
   | "low";
 
+export type SummarySource =
+  | "primary"
+  | "fallback-model"
+  | "deterministic";
+
 export interface Recommendation {
   action: RecommendationAction;
 
@@ -130,6 +135,8 @@ export interface AuditResult {
 
   // added asynchronously after AI summary generation
   aiSummary?: string;
+
+  summarySource?: SummarySource;
 
   createdAt?: string;
 }
@@ -183,7 +190,7 @@ export interface AuditApiResponse {
 export interface SummaryApiResponse {
   summary: string;
 
-  isFallback: boolean;
+  source: SummarySource;
 }
 
 export interface LeadApiRequest {
