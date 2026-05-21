@@ -145,7 +145,9 @@ export interface AuditRow {
 
   results: ToolAuditResult[];
 
-  total_savings: number;
+  total_monthly_savings: number;
+
+  total_annual_savings: number;
 
   use_case: UseCase;
 

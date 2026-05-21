@@ -16,16 +16,11 @@ export interface Database {
   public: {
     Tables: {
       audits: {
-        Row: AuditRow; // full DB row
+        Row: AuditRow;
+
         Insert: Omit<
           AuditRow,
           "id" | "created_at"
-        >;
-        Update: Partial<
-          Omit<
-            AuditRow,
-            "id" | "created_at"
-          >
         >;
       };
 
@@ -36,20 +31,13 @@ export interface Database {
           LeadRow,
           "id" | "created_at"
         >;
-
-        Update: Partial<
-          Omit<
-            LeadRow,
-            "id" | "created_at"
-          >
-        >;
       };
     };
   };
 }
 
 export type TypedSupabaseClient =
-  SupabaseClient<Database>;
+  SupabaseClient;
 
 // ─── Runtime Guards ────────────────────────────────────────────────────────
 
@@ -59,7 +47,7 @@ function assertServerOnly(): void {
     "undefined"
   ) {
     throw new Error(
-      "[supabase] Admin client cannot run in the browser."
+      "[supabase] Admin client cannot run in browser"
     );
   }
 }
@@ -96,12 +84,12 @@ export function getBrowserClient():
 // ─── Server Client ─────────────────────────────────────────────────────────
 
 /**
- * Server-only anon client.
- * Uses RLS.
+ * Server-side anon client.
+ * Respects RLS.
  */
 export function getServerClient():
   TypedSupabaseClient {
-  return createClient<Database>(
+  return createClient(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
@@ -120,7 +108,7 @@ let _adminClient:
   | null = null;
 
 /**
- * Server-only privileged client.
+ * Privileged server-only client.
  * Bypasses RLS.
  */
 export function getAdminClient():
@@ -157,7 +145,7 @@ export const db = Object.freeze({
     getAdminClient(),
 });
 
-// ─── Future-friendly Aliases ───────────────────────────────────────────────
+// ─── Aliases ───────────────────────────────────────────────────────────────
 
 export const createServerDb =
   getServerClient;
