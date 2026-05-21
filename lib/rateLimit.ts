@@ -120,6 +120,23 @@ if (
     }, CLEANUP_INTERVAL_MS);
 }
 
+/**
+ * @internal
+ * Stops cleanup timer for Jest shutdown.
+ */
+export function _stopRateLimitCleanup(): void {
+  if (
+    globalThis.__spendoraRateLimitCleanup
+  ) {
+    clearInterval(
+      globalThis.__spendoraRateLimitCleanup
+    );
+
+    globalThis.__spendoraRateLimitCleanup =
+      undefined;
+  }
+}
+
 // ─── Core Rate Limiter ─────────────────────────────────────────────────────
 
 /**
