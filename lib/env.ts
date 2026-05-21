@@ -235,6 +235,9 @@ export function _resetEnvCache(): void {
   _env = null;
 }
 
-export const isProduction =
-  getEnv().NODE_ENV ===
-  "production";
+export function isProduction(): boolean {
+  return (
+    getEnv().NODE_ENV ===
+    "production"
+  );
+}
