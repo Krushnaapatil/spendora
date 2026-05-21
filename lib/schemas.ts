@@ -16,6 +16,7 @@ import { z } from "zod";
 
 import type {
   AnyPlan,
+  AuditResult,
   AuditInput,
   ToolInput,
 } from "./types";
@@ -149,13 +150,53 @@ export type AuditRequestBody =
 /**
  * POST /api/summary request body
  */
-export const summaryRequestSchema =
-  z
-    .object({
-      auditId: z.uuid({
-        message:
-          "Invalid audit ID",
-      }),
+export const summaryRequestSchema = z
+  .object({
+    auditId: z.uuid({
+      message:
+        "Invalid audit ID",
+    }),
+
+    result: z.object({
+      tools: z.array(
+        z.object({
+          toolId:
+            toolIdSchema,
+
+          currentSpend:
+            moneySchema,
+
+          recommendation:
+            z.object({
+              action: z.enum([
+                "downgrade",
+                "switch",
+                "credits",
+                "optimal",
+              ]),
+
+              targetToolId:
+                toolIdSchema.optional(),
+
+              targetPlan:
+                anyPlanSchema.optional(),
+
+              monthlySavings:
+                moneySchema,
+
+              confidence:
+                z.enum([
+                  "high",
+                  "medium",
+                  "low",
+                ])
+                .optional(),
+
+              reason:
+                z.string(),
+            }),
+        })
+      ),
 
       totalMonthlySavings:
         moneySchema,
@@ -163,16 +204,25 @@ export const summaryRequestSchema =
       totalAnnualSavings:
         moneySchema,
 
-      useCase:
-        useCaseSchema,
+      aiSummary:
+        z.string().optional(),
 
-      teamSize:
-        positiveIntSchema,
+      summarySource:
+        z.enum([
+          "primary",
+          "fallback-model",
+          "deterministic",
+        ])
+        .optional(),
 
-      toolCount:
-        positiveIntSchema,
-    })
-    .strict();
+      createdAt:
+        z.string().optional(),
+
+      id:
+        z.string().optional(),
+    }),
+  })
+  .strict();
 
 export type SummaryRequestBody =
   z.infer<
