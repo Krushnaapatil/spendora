@@ -13,7 +13,7 @@
  * Usage:
  *   import { env } from "@/lib/env";
  *
- *   env.ANTHROPIC_API_KEY
+ *   env.OPENROUTER_API_KEY
  *   env.NEXT_PUBLIC_APP_URL
  *
  * Important:
@@ -138,11 +138,11 @@ function buildEnv() {
         "SUPABASE_SERVICE_ROLE_KEY"
       ),
 
-    // ── Anthropic (SERVER ONLY) ─────────────────────────────────────────
+    // ── OPENROUTER (SERVER ONLY) ─────────────────────────────────────────
 
-    ANTHROPIC_API_KEY:
+    OPENROUTER_API_KEY:
       requireEnv(
-        "ANTHROPIC_API_KEY"
+        "OPENROUTER_API_KEY"
       ),
 
     // ── Resend (SERVER ONLY) ────────────────────────────────────────────
