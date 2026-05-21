@@ -22,14 +22,28 @@ export interface Database {
           AuditRow,
           "id" | "created_at"
         >;
+
+        Update: Partial<
+          Omit<
+            AuditRow,
+            "id" | "created_at"
+          >
+        >;
       };
 
       leads: {
         Row: LeadRow;
-        created_from_ip?: string;
+
         Insert: Omit<
           LeadRow,
           "id" | "created_at"
+        >;
+
+        Update: Partial<
+          Omit<
+            LeadRow,
+            "id" | "created_at"
+          >
         >;
       };
     };
@@ -37,7 +51,7 @@ export interface Database {
 }
 
 export type TypedSupabaseClient =
-  SupabaseClient;
+  SupabaseClient<Database>;
 
 // ─── Runtime Guards ────────────────────────────────────────────────────────
 

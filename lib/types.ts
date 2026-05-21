@@ -156,6 +156,10 @@ export interface AuditRow {
 
   total_annual_savings: number;
 
+  ai_summary?: string;
+
+  summary_source?: SummarySource;
+
   use_case: UseCase;
 
   team_size: number;
