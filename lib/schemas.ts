@@ -16,6 +16,7 @@ import { z } from "zod";
 
 import type {
   AnyPlan,
+  SummarySource,
   AuditResult,
   AuditInput,
   ToolInput,
@@ -157,70 +158,72 @@ export const summaryRequestSchema = z
         "Invalid audit ID",
     }),
 
-    result: z.object({
-      tools: z.array(
-        z.object({
-          toolId:
-            toolIdSchema,
+    result: z
+      .object({
+        id:
+          z.string().optional(),
 
-          currentSpend:
-            moneySchema,
+        tools: z.array(
+          z.object({
+            toolId:
+              toolIdSchema,
 
-          recommendation:
-            z.object({
-              action: z.enum([
-                "downgrade",
-                "switch",
-                "credits",
-                "optimal",
-              ]),
+            currentSpend:
+              moneySchema,
 
-              targetToolId:
-                toolIdSchema.optional(),
+            recommendation:
+              z.object({
+                action: z.enum([
+                  "downgrade",
+                  "switch",
+                  "credits",
+                  "optimal",
+                ]),
 
-              targetPlan:
-                anyPlanSchema.optional(),
+                targetToolId:
+                  toolIdSchema.optional(),
 
-              monthlySavings:
-                moneySchema,
+                targetPlan:
+                  anyPlanSchema.optional(),
 
-              confidence:
-                z.enum([
-                  "high",
-                  "medium",
-                  "low",
-                ])
-                .optional(),
+                monthlySavings:
+                  moneySchema,
 
-              reason:
-                z.string(),
-            }),
-        })
-      ),
+                confidence:
+                  z.enum([
+                    "high",
+                    "medium",
+                    "low",
+                  ])
+                  .optional(),
 
-      totalMonthlySavings:
-        moneySchema,
+                reason:
+                  z.string(),
+              }),
+          })
+        ),
 
-      totalAnnualSavings:
-        moneySchema,
+        totalMonthlySavings:
+          moneySchema,
 
-      aiSummary:
-        z.string().optional(),
+        totalAnnualSavings:
+          moneySchema,
 
-      summarySource:
-        z.enum([
-          "primary",
-          "fallback-model",
-          "deterministic",
-        ])
-        .optional(),
+        aiSummary:
+          z.string().optional(),
 
-      createdAt:
-        z.string().optional(),
+        summarySource:
+          z.enum([
+            "primary",
+            "fallback-model",
+            "deterministic",
+          ] satisfies SummarySource[])
+          .optional(),
 
-      id:
-        z.string().optional(),
-    }),
+        createdAt:
+          z.string().optional(),
+      })
+      .strict(),
   })
   .strict();
 
