@@ -98,3 +98,72 @@ If the primary model fails:
 The API route never fails solely because AI fails.
 
 This guarantees graceful degradation.
+
+---
+
+# Prompt Iteration Notes
+
+## Prompt V1
+
+### Approach
+Initial prompt focused only on generating a professional summary.
+
+### Problems Encountered
+- Responses were too verbose
+- Some summaries exceeded 200 words
+- Tone occasionally became generic marketing language
+- Models sometimes repeated savings numbers multiple times
+
+### Result
+Usable, but inconsistent for executive-style reporting.
+
+---
+
+## Prompt V2
+
+### Changes Made
+- Added strict 100-word limit
+- Explicitly instructed the model to avoid hallucinating pricing
+- Added structured audit metrics directly into the prompt
+- Required concise operational tone
+
+### Improvements
+- Summaries became significantly more consistent
+- Reduced hallucinated claims
+- Improved readability for non-technical users
+- Better alignment with finance/reporting use cases
+
+---
+
+## Prompt V3
+
+### Changes Made
+- Added deterministic recommendations separately from AI generation
+- Restricted AI responsibility to summarization only
+- Added explicit instruction:
+  "Return ONLY the summary paragraph"
+
+### Improvements
+- Reduced formatting inconsistencies
+- Prevented markdown/bullet output
+- Improved API response predictability
+- Simplified frontend rendering
+
+---
+
+# Reliability & Fallback Philosophy
+
+Spendora treats AI as:
+- optional enrichment
+- not core infrastructure
+
+The platform must still function correctly even if:
+- OpenRouter is unavailable
+- models timeout
+- providers rate-limit requests
+- responses are malformed
+
+Therefore:
+- financial calculations remain deterministic
+- AI summaries are replaceable
+- graceful degradation is mandatory
