@@ -27,7 +27,7 @@ const resend =
 
 export async function sendLeadConfirmationEmail(
   email: string
-): Promise<void> {
+): Promise<boolean> {
   try {
     await resend.emails.send({
       from:
@@ -63,10 +63,14 @@ export async function sendLeadConfirmationEmail(
         </div>
       `,
     });
+
+    return true;
   } catch (error) {
     console.error(
       "[email] failed to send lead confirmation",
       error
     );
+
+    return false;
   }
 }

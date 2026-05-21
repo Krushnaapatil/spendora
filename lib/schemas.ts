@@ -237,58 +237,38 @@ export type SummaryRequestBody =
 /**
  * POST /api/leads request body
  */
-export const leadRequestSchema =
-  z
-    .object({
-      auditId: z.uuid({
-        message:
-          "Invalid audit ID",
+export const leadRequestSchema = z
+  .object({
+    auditId: z.uuid({
+      message: "Invalid audit ID",
+    }),
+
+    email: z.string().trim().toLowerCase().email("Invalid email address"),
+
+    company: z.string().trim().max(200).optional(),
+
+    role: z.string().trim().max(200).optional(),
+
+    teamSize: positiveIntSchema.max(100_000).optional(),
+
+    /**
+     * Attribution source
+     * e.g. twitter, linkedin, reddit
+     */
+    source: z.string().trim().max(100).optional(),
+
+    /**
+     * Hidden bot-trap field.
+     * Humans never fill this.
+     */
+    honeypot: z
+      .string()
+      .default("")
+      .refine((value) => value === "", {
+        message: "Bot detected",
       }),
-
-      email: z
-        .string()
-        .trim()
-        .toLowerCase()
-        .email(
-          "Invalid email address"
-        ),
-
-      company: z
-        .string()
-        .trim()
-        .max(200)
-        .optional(),
-
-      role: z
-        .string()
-        .trim()
-        .max(200)
-        .optional(),
-
-      teamSize:
-        positiveIntSchema
-          .max(100_000)
-          .optional(),
-
-      /**
-       * Attribution source
-       * e.g. twitter, linkedin, reddit
-       */
-      source: z
-        .string()
-        .trim()
-        .max(100)
-        .optional(),
-
-      /**
-       * Hidden bot-trap field.
-       * Humans never fill this.
-       */
-      honeypot: z
-        .literal("")
-        .optional(),
-    })
-    .strict();
+  })
+  .strict();
 
 export type LeadRequestBody =
   z.infer<
