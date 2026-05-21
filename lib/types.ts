@@ -178,6 +178,8 @@ export interface LeadRow {
 
   // attribution tracking
   source?: string;
+
+  created_from_ip?: string;
 }
 
 // ─── API Request / Response Contracts ───────────────────────────────────────
@@ -213,4 +215,6 @@ export interface LeadApiRequest {
 
 export interface LeadApiResponse {
   success: boolean;
+
+  emailSent: boolean;
 }

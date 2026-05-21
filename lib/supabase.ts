@@ -26,7 +26,7 @@ export interface Database {
 
       leads: {
         Row: LeadRow;
-
+        created_from_ip?: string;
         Insert: Omit<
           LeadRow,
           "id" | "created_at"
