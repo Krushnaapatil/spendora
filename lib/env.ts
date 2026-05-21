@@ -116,15 +116,9 @@ function buildEnv() {
   return Object.freeze({
     // ── Supabase (browser-safe) ─────────────────────────────────────────
 
-    NEXT_PUBLIC_SUPABASE_URL:
-      requireEnv(
-        "NEXT_PUBLIC_SUPABASE_URL"
-      ),
+    NEXT_PUBLIC_SUPABASE_URL: requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
 
-    NEXT_PUBLIC_SUPABASE_ANON_KEY:
-      requireEnv(
-        "NEXT_PUBLIC_SUPABASE_ANON_KEY"
-      ),
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
 
     // ── Supabase (SERVER ONLY) ──────────────────────────────────────────
 
@@ -133,37 +127,36 @@ function buildEnv() {
      * Bypasses Row Level Security.
      * NEVER expose to browser.
      */
-    SUPABASE_SERVICE_ROLE_KEY:
-      requireEnv(
-        "SUPABASE_SERVICE_ROLE_KEY"
-      ),
+    SUPABASE_SERVICE_ROLE_KEY: requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
 
     // ── OPENROUTER (SERVER ONLY) ─────────────────────────────────────────
 
-    OPENROUTER_API_KEY:
-      requireEnv(
-        "OPENROUTER_API_KEY"
-      ),
+    OPENROUTER_API_KEY: requireEnv("OPENROUTER_API_KEY"),
+
+    OPENROUTER_MODEL_PRIMARY: optionalEnv(
+      "OPENROUTER_MODEL_PRIMARY",
+      "google/gemma-4-26b-a4b-it:free",
+    ),
+
+    OPENROUTER_MODEL_FALLBACK: optionalEnv(
+      "OPENROUTER_MODEL_FALLBACK",
+      "deepseek/deepseek-v4-flash:free",
+    ),
+
+    APP_ENV: optionalEnv("APP_ENV", "local"),
 
     // ── Resend (SERVER ONLY) ────────────────────────────────────────────
 
-    RESEND_API_KEY:
-      requireEnv(
-        "RESEND_API_KEY"
-      ),
+    RESEND_API_KEY: requireEnv("RESEND_API_KEY"),
 
-    FROM_EMAIL: optionalEnv(
-      "FROM_EMAIL",
-      "noreply@spendora.app"
-    ),
+    FROM_EMAIL: optionalEnv("FROM_EMAIL", "noreply@spendora.app"),
 
     // ── App ─────────────────────────────────────────────────────────────
 
-    NEXT_PUBLIC_APP_URL:
-      optionalEnv(
-        "NEXT_PUBLIC_APP_URL",
-        "http://localhost:3000"
-      ),
+    NEXT_PUBLIC_APP_URL: optionalEnv(
+      "NEXT_PUBLIC_APP_URL",
+      "http://localhost:3000",
+    ),
 
     // ── Runtime ─────────────────────────────────────────────────────────
 
@@ -241,3 +234,7 @@ export type Env =
 export function _resetEnvCache(): void {
   _env = null;
 }
+
+export const isProduction =
+  getEnv().NODE_ENV ===
+  "production";
