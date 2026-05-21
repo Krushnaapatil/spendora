@@ -17,7 +17,6 @@ import { z } from "zod";
 import type {
   AnyPlan,
   SummarySource,
-  AuditResult,
   AuditInput,
   ToolInput,
 } from "./types";

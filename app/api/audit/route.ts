@@ -133,7 +133,7 @@ export async function POST(
   } = await db
     .admin()
     .from("audits")
-    .insert([auditInsert])
+    .insert([auditInsert] as never[])
     .select("id")
     .single();
 

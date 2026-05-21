@@ -5,68 +5,18 @@ import {
 
 import { env } from "./env";
 
-import type {
-  AuditRow,
-  LeadRow,
-} from "./types";
-
-// ─── Database Types ────────────────────────────────────────────────────────
-
-export interface Database {
-  public: {
-    Tables: {
-      audits: {
-        Row: AuditRow;
-
-        Insert: Omit<
-          AuditRow,
-          "id" | "created_at"
-        >;
-
-        Update: Partial<
-          Omit<
-            AuditRow,
-            "id" | "created_at"
-          >
-        >;
-      };
-
-      leads: {
-        Row: LeadRow;
-
-        Insert: Omit<
-          LeadRow,
-          "id" | "created_at"
-        >;
-
-        Update: Partial<
-          Omit<
-            LeadRow,
-            "id" | "created_at"
-          >
-        >;
-      };
-    };
-  };
-}
+import type { Database } from "./database.types";
 
 export type TypedSupabaseClient =
   SupabaseClient<Database>;
 
-// ─── Runtime Guards ────────────────────────────────────────────────────────
-
 function assertServerOnly(): void {
-  if (
-    typeof window !==
-    "undefined"
-  ) {
+  if (typeof window !== "undefined") {
     throw new Error(
       "[supabase] Admin client cannot run in browser"
     );
   }
 }
-
-// ─── Browser Client ────────────────────────────────────────────────────────
 
 let _browserClient:
   | TypedSupabaseClient
@@ -95,15 +45,13 @@ export function getBrowserClient():
   return _browserClient;
 }
 
-// ─── Server Client ─────────────────────────────────────────────────────────
-
 /**
  * Server-side anon client.
  * Respects RLS.
  */
 export function getServerClient():
   TypedSupabaseClient {
-  return createClient(
+  return createClient<Database>(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
@@ -114,8 +62,6 @@ export function getServerClient():
     }
   );
 }
-
-// ─── Admin Client ──────────────────────────────────────────────────────────
 
 let _adminClient:
   | TypedSupabaseClient
@@ -146,20 +92,19 @@ export function getAdminClient():
   return _adminClient;
 }
 
-// ─── Convenience Exports ───────────────────────────────────────────────────
-
 export const db = Object.freeze({
-  browser: () =>
-    getBrowserClient(),
+  browser:
+    (): TypedSupabaseClient =>
+      getBrowserClient(),
 
-  server: () =>
-    getServerClient(),
+  server:
+    (): TypedSupabaseClient =>
+      getServerClient(),
 
-  admin: () =>
-    getAdminClient(),
+  admin:
+    (): TypedSupabaseClient =>
+      getAdminClient(),
 });
-
-// ─── Aliases ───────────────────────────────────────────────────────────────
 
 export const createServerDb =
   getServerClient;

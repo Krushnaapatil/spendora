@@ -10,9 +10,11 @@
  */
 export function jsonResponse(
   data: unknown,
-  init?: ResponseInit
+  init: ResponseInit = {}
 ): Response {
   return Response.json(data, {
+    ...init,
+
     headers: {
       "Content-Type":
         "application/json",
@@ -20,10 +22,8 @@ export function jsonResponse(
       "Cache-Control":
         "no-store",
 
-      ...(init?.headers ?? {}),
+      ...(init.headers ?? {}),
     },
-
-    ...init,
   });
 }
 

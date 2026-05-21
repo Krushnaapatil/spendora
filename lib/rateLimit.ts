@@ -23,7 +23,6 @@
 
 declare global {
   // Prevent duplicate cleanup intervals during Next.js HMR
-  // eslint-disable-next-line no-var
   var __spendoraRateLimitCleanup:
     | NodeJS.Timeout
     | undefined;

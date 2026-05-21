@@ -159,14 +159,10 @@ export async function POST(
       ip,
   };
 
-  const {
-    error: dbError,
-  } = await db
+  const { error: dbError } = await db
     .admin()
     .from("leads")
-    .insert(
-      leadInsert
-    );
+    .insert([leadInsert] as never[]);
 
   if (dbError) {
     console.error(

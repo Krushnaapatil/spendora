@@ -68,3 +68,34 @@
 - Add graceful fallback summary generation
 - Implement app/api/summary/route.ts
 - Start lead capture pipeline
+
+## Day 3 — Backend Infrastructure Stabilization
+
+### Completed
+- Replaced handwritten Supabase schema contracts with generated database types
+- Fixed typed Supabase insert inference failures across audit and lead routes
+- Implemented resilient AI summary pipeline using OpenRouter with multi-model fallback
+- Added transactional email infrastructure using Resend
+- Built lead capture orchestration with honeypot protection and rate limiting
+- Fixed JSON response header merge behavior
+- Stabilized linting and TypeScript infrastructure
+
+### Problems Encountered
+- Supabase generic inference collapsed inserts to never due to incomplete handwritten schema contracts
+- Route persistence typing drifted from database schema over time
+- API response helpers unintentionally overwrote default headers
+
+### Decisions Made
+- Switched to generated Supabase types instead of maintaining handwritten DB contracts
+- Kept API routes thin and delegated logic to infrastructure layers
+- Treated email delivery as non-critical compared to lead persistence
+
+### Infrastructure
+- Added shared database.types.ts schema source
+- Unified typed Supabase client behavior
+- Improved API response consistency and observability
+
+### Next Steps
+- Build public audit result pages with SEO metadata
+- Add OG/Twitter card support
+- Render shareable read-only audit reports
