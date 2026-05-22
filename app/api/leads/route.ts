@@ -149,6 +149,9 @@ export async function POST(
 
     team_size:
       input.teamSize,
+
+    source:
+      input.source,
   };
 
   const { error: dbError } = await db

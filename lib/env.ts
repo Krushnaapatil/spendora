@@ -135,12 +135,12 @@ function buildEnv() {
 
     OPENROUTER_MODEL_PRIMARY: optionalEnv(
       "OPENROUTER_MODEL_PRIMARY",
-      "google/gemma-4-26b-a4b-it:free",
+      "liquid/lfm-2.5-1.2b-instruct:free",
     ),
 
     OPENROUTER_MODEL_FALLBACK: optionalEnv(
       "OPENROUTER_MODEL_FALLBACK",
-      "deepseek/deepseek-v4-flash:free",
+      "openai/gpt-oss-120b:free",
     ),
 
     APP_ENV: optionalEnv("APP_ENV", "local"),

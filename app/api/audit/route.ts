@@ -16,6 +16,7 @@
 export const runtime = "nodejs";
 
 import { runAudit } from "@/lib/auditEngine";
+import { generateAuditSummary } from "@/lib/ai";
 
 import {
   auditRateLimit,
@@ -44,6 +45,20 @@ import type {
 import type {
   AuditApiResponse,
 } from "@/lib/types";
+
+function asPlainJson(value: unknown): Json {
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value) as Json;
+    } catch {
+      return value as Json;
+    }
+  }
+
+  return JSON.parse(
+    JSON.stringify(value)
+  ) as Json;
+}
 
 // ─── POST /api/audit ─────────────────────────────────────────────────────
 
@@ -101,6 +116,11 @@ export async function POST(
   const result =
     runAudit(input);
 
+  const summaryResult =
+    await generateAuditSummary(
+      result
+    );
+
   // ── Step 5: Build DB Payload ────────────────────────────────────────
 
   const auditInsert: Omit<
@@ -108,10 +128,14 @@ export async function POST(
     "id" | "created_at"
   > = {
     tools:
-      input.tools as unknown as Json,
+      asPlainJson(
+        input.tools
+      ),
 
     results:
-      result.tools as unknown as Json,
+      asPlainJson(
+        result.tools
+      ),
 
     total_monthly_savings:
       result.totalMonthlySavings,
@@ -123,10 +147,16 @@ export async function POST(
       result.totalAnnualSavings,
 
     summary:
-      null,
+      summaryResult.summary,
 
     ai_summary:
-      null,
+      summaryResult.summary,
+
+    team_size:
+      input.teamSize,
+
+    use_case:
+      input.useCase,
   };
 
   // ── Step 6: Persist ─────────────────────────────────────────────────
@@ -193,6 +223,12 @@ export async function POST(
 
     result: {
       ...result,
+      aiSummary:
+        summaryResult.summary,
+
+      summarySource:
+        summaryResult.source,
+
       id: row.id,
     },
   } satisfies AuditApiResponse;

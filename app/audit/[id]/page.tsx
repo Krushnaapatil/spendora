@@ -3,7 +3,6 @@ import type {
 } from "next";
 
 import type {
-  AuditRow,
   ToolAuditResult,
 } from "@/lib/types";
 
@@ -12,6 +11,10 @@ import {
 } from "next/navigation";
 
 import { db } from "@/lib/supabase";
+
+import type {
+  Database,
+} from "@/lib/database.types";
 
 import {
   formatUSD,
@@ -26,14 +29,17 @@ interface AuditPageProps {
   }>;
 }
 
+type AuditDbRow =
+  Database["public"]["Tables"]["audits"]["Row"];
+
 // ─── Fetch Audit ──────────────────────────────────────────────────────────
 
 async function getAudit(
   id: string
-): Promise<AuditRow | null> {
+): Promise<AuditDbRow | null> {
   const response =
     await db
-      .server()
+      .admin()
       .from("audits")
       .select("*")
       .eq("id", id)
@@ -41,7 +47,7 @@ async function getAudit(
 
   const typedResponse =
     response as unknown as {
-      data: AuditRow | null;
+      data: AuditDbRow | null;
       error: Error | null;
     };
 
@@ -77,12 +83,12 @@ export async function generateMetadata(
 
   const monthlySavings =
     formatUSD(
-      audit.total_monthly_savings
+      audit.total_monthly_savings ?? 0
     );
 
   const annualSavings =
     formatUSD(
-      audit.total_annual_savings
+      audit.total_annual_savings ?? 0
     );
 
   const title =
@@ -179,16 +185,23 @@ export default async function AuditPage(
       audit.created_at,
 
     totalMonthlySavings:
-      audit.total_monthly_savings,
+      audit.total_monthly_savings ?? 0,
 
     totalAnnualSavings:
-      audit.total_annual_savings,
+      audit.total_annual_savings ?? 0,
 
     aiSummary:
+      audit.ai_summary ??
+      audit.summary,
+
+    summary:
+      audit.summary ??
       audit.ai_summary,
 
     tools:
-      audit.results,
+      Array.isArray(audit.results)
+        ? (audit.results as unknown as ToolAuditResult[])
+        : [],
   };
 
   return (
@@ -262,7 +275,8 @@ export default async function AuditPage(
 
                 <p className="mt-3 text-sm font-medium text-zinc-800">
                   {new Date(
-                    publicAudit.createdAt
+                    publicAudit.createdAt ??
+                      new Date().toISOString()
                   ).toLocaleDateString()}
                 </p>
               </div>

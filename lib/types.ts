@@ -1,5 +1,6 @@
-// ─── Tool & Plan IDs ────────────────────────────────────────────────────────
+import type { Json } from "./database.types";
 
+// Tool & Plan IDs
 export type ToolId =
   | "cursor"
   | "github-copilot"
@@ -17,7 +18,6 @@ export type UseCase =
   | "research"
   | "mixed";
 
-// Plans per tool — used as dropdown values in the form
 export type CursorPlan =
   | "hobby"
   | "pro"
@@ -67,12 +67,10 @@ export type AnyPlan =
   | GeminiPlan
   | WindsurfPlan;
 
-// ─── Input Models ───────────────────────────────────────────────────────────
-
 export interface ToolInput {
   toolId: ToolId;
   plan: AnyPlan;
-  monthlySpend: number; // actual amount user currently pays
+  monthlySpend: number;
   seats: number;
 }
 
@@ -82,13 +80,11 @@ export interface AuditInput {
   useCase: UseCase;
 }
 
-// ─── Audit Engine Output ────────────────────────────────────────────────────
-
 export type RecommendationAction =
-  | "downgrade" // cheaper plan, same vendor
-  | "switch" // different tool recommendation
-  | "credits" // Spendora discounted credits opportunity
-  | "optimal"; // already efficiently configured
+  | "downgrade"
+  | "switch"
+  | "credits"
+  | "optimal";
 
 export type RecommendationConfidence =
   | "high"
@@ -102,19 +98,10 @@ export type SummarySource =
 
 export interface Recommendation {
   action: RecommendationAction;
-
-  // used for cross-tool replacement suggestions
   targetToolId?: ToolId;
-
-  // used for downgrade recommendations
   targetPlan?: AnyPlan;
-
   monthlySavings: number;
-
-  // confidence level of recommendation quality
   confidence?: RecommendationConfidence;
-
-  // short finance-friendly explanation
   reason: string;
 }
 
@@ -125,68 +112,38 @@ export interface ToolAuditResult {
 }
 
 export interface AuditResult {
-  id?: string; // UUID after Supabase persistence
-
+  id?: string;
   tools: ToolAuditResult[];
-
   totalMonthlySavings: number;
-
   totalAnnualSavings: number;
-
-  // added asynchronously after AI summary generation
   aiSummary?: string;
-
   summarySource?: SummarySource;
-
   createdAt?: string;
 }
 
-// ─── Supabase Persistence Shapes ────────────────────────────────────────────
-
 export interface AuditRow {
   id: string;
-
-  created_at: string;
-
-  tools_data: ToolInput[];
-
-  results: ToolAuditResult[];
-
-  total_monthly_savings: number;
-
-  total_annual_savings: number;
-
-  ai_summary?: string;
-
-  summary_source?: SummarySource;
-
-  use_case: UseCase;
-
-  team_size: number;
+  tools: Json;
+  total_savings: number | null;
+  summary: string | null;
+  created_at: string | null;
+  ai_summary: string | null;
+  total_monthly_savings: number | null;
+  total_annual_savings: number | null;
+  results: Json | null;
+  use_case: UseCase | null;
+  team_size: number | null;
 }
 
 export interface LeadRow {
   id: string;
-
+  email: string | null;
+  company: string | null;
+  role: string | null;
+  team_size: number | null;
   created_at: string;
-
-  audit_id: string;
-
-  email: string;
-
-  company?: string;
-
-  role?: string;
-
-  team_size?: number;
-
-  // attribution tracking
-  source?: string;
-
-  created_from_ip?: string;
+  source: string | null;
 }
-
-// ─── API Request / Response Contracts ───────────────────────────────────────
 
 export interface AuditApiResponse {
   auditId: string;
@@ -195,30 +152,20 @@ export interface AuditApiResponse {
 
 export interface SummaryApiResponse {
   summary: string;
-
   source: SummarySource;
 }
 
 export interface LeadApiRequest {
   auditId: string;
-
   email: string;
-
   company?: string;
-
   role?: string;
-
   teamSize?: number;
-
-  // attribution source (twitter, linkedin, reddit, etc.)
   source?: string;
-
-  // hidden bot-trap field — must remain empty
   honeypot?: string;
 }
 
 export interface LeadApiResponse {
   success: boolean;
-
   emailSent: boolean;
 }

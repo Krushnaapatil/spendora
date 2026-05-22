@@ -128,8 +128,13 @@ async function callModel(
     );
 
   if (!response.ok) {
+    const errorBody =
+      await response
+        .text()
+        .catch(() => "");
+
     throw new Error(
-      `[ai] OpenRouter request failed (${model})`
+      `[ai] OpenRouter request failed (${model}) status=${response.status} body=${errorBody.slice(0, 500)}`
     );
   }
 
