@@ -51,6 +51,33 @@ const DEFAULT_FORM_STATE: FormState =
     ],
   };
 
+function normalizeToolRow(
+  row: ToolRow
+): ToolRow {
+  const allowedPlans =
+    TOOL_PLANS[row.tool] as readonly string[];
+
+  return {
+    ...row,
+    plan: allowedPlans.includes(
+      row.plan
+    )
+      ? row.plan
+      : allowedPlans[0],
+  };
+}
+
+function normalizeFormState(
+  state: FormState
+): FormState {
+  return {
+    ...state,
+    tools: state.tools.map(
+      normalizeToolRow
+    ),
+  };
+}
+
 const LOADING_MESSAGES = [
   "Analyzing subscriptions...",
   "Checking pricing tiers...",
@@ -77,9 +104,9 @@ function getStoredFormState(): FormState {
       return DEFAULT_FORM_STATE;
     }
 
-    return JSON.parse(
-      saved
-    ) as FormState;
+    return normalizeFormState(
+      JSON.parse(saved) as FormState
+    );
   } catch {
     return DEFAULT_FORM_STATE;
   }
@@ -141,7 +168,9 @@ export default function AuditForm() {
         const stored =
           getStoredFormState();
 
-        setFormState(stored);
+        setFormState(
+          normalizeFormState(stored)
+        );
       });
 
     return () =>
@@ -267,7 +296,10 @@ export default function AuditForm() {
         return {
           ...prev,
 
-          tools: updated,
+          tools:
+            updated.map(
+              normalizeToolRow
+            ),
         };
       }
     );

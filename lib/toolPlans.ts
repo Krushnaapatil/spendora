@@ -29,7 +29,7 @@ export const TOOL_PLANS = {
   ],
 
   gemini: [
-    "advanced",
+    "pro",
     "business",
     "enterprise",
   ],
@@ -37,7 +37,7 @@ export const TOOL_PLANS = {
   windsurf: [
     "free",
     "pro",
-    "teams",
+    "team",
   ],
 } as const;
 
