@@ -4,6 +4,7 @@ import type {
 
 import type {
   AuditRow,
+  ToolAuditResult,
 } from "@/lib/types";
 
 import {
@@ -25,36 +26,36 @@ interface AuditPageProps {
   }>;
 }
 
-// ─── Shared Fetch Helper ──────────────────────────────────────────────────
+// ─── Fetch Audit ──────────────────────────────────────────────────────────
 
 async function getAudit(
   id: string
 ): Promise<AuditRow | null> {
-  const {
-    data,
-    error,
-  }: {
-    data: AuditRow | null;
+  const response =
+    await db
+      .server()
+      .from("audits")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-    error: Error | null;
-  } = await db
-    .server()
-    .from("audits")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const typedResponse =
+    response as unknown as {
+      data: AuditRow | null;
+      error: Error | null;
+    };
 
   if (
-    error ||
-    !data
+    typedResponse.error ||
+    !typedResponse.data
   ) {
     return null;
   }
 
-  return data;
+  return typedResponse.data;
 }
 
-// ─── SEO Metadata ─────────────────────────────────────────────────────────
+// ─── Metadata ─────────────────────────────────────────────────────────────
 
 export async function generateMetadata(
   props: AuditPageProps
@@ -88,7 +89,7 @@ export async function generateMetadata(
     `This team could save ${monthlySavings}/mo on AI tools`;
 
   const description =
-    `Spendora identified potential savings of ${monthlySavings}/month (${annualSavings}/year) across AI tooling subscriptions.`;
+    `Spendora identified ${annualSavings}/year in potential AI tooling savings.`;
 
   return {
     title,
@@ -97,21 +98,60 @@ export async function generateMetadata(
 
     openGraph: {
       title,
-
       description,
-
       type: "website",
     },
 
     twitter: {
       card:
         "summary_large_image",
-
       title,
-
       description,
     },
   };
+}
+
+// ─── Confidence Badge ─────────────────────────────────────────────────────
+
+function confidenceClasses(
+  confidence?: string
+): string {
+  switch (confidence) {
+    case "high":
+      return "bg-green-100 text-green-700 border-green-200";
+
+    case "medium":
+      return "bg-yellow-100 text-yellow-700 border-yellow-200";
+
+    case "low":
+      return "bg-red-100 text-red-700 border-red-200";
+
+    default:
+      return "bg-zinc-100 text-zinc-700 border-zinc-200";
+  }
+}
+
+// ─── Action Label ─────────────────────────────────────────────────────────
+
+function actionLabel(
+  action: string
+): string {
+  switch (action) {
+    case "downgrade":
+      return "Downgrade Plan";
+
+    case "switch":
+      return "Switch Tool";
+
+    case "credits":
+      return "Optimize Credits";
+
+    case "optimal":
+      return "Already Optimized";
+
+    default:
+      return action;
+  }
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────
@@ -130,8 +170,6 @@ export default async function AuditPage(
   if (!audit) {
     notFound();
   }
-
-  // ── Public-safe sanitized object ───────────────────────────────────
 
   const publicAudit = {
     id:
@@ -154,114 +192,223 @@ export default async function AuditPage(
   };
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-12">
-      {/* ─── Header ───────────────────────────────────────────── */}
+    <main className="min-h-screen bg-zinc-50">
+      <div className="mx-auto max-w-6xl px-6 py-12">
+        {/* ─── Hero ───────────────────────────────────── */}
 
-      <div className="mb-10">
-        <p className="mb-2 text-sm text-zinc-500">
-          Spendora AI Audit
-        </p>
+        <section className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm lg:p-12">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                Spendora AI Audit
+              </p>
 
-        <h1 className="text-4xl font-bold tracking-tight">
-          Potential Savings:
-          {" "}
-          {formatUSD(
-            publicAudit.totalMonthlySavings
-          )}
-          /mo
-        </h1>
+              <h1 className="text-4xl font-bold tracking-tight text-zinc-950 lg:text-6xl">
+                This team could save{" "}
+                <span className="text-green-600">
+                  {formatUSD(
+                    publicAudit.totalAnnualSavings
+                  )}
+                </span>
+                /year
+              </h1>
 
-        <p className="mt-3 text-lg text-zinc-600">
-          Estimated annual savings:
-          {" "}
-          {formatUSD(
-            publicAudit.totalAnnualSavings
-          )}
-        </p>
-      </div>
+              <p className="mt-6 text-lg leading-8 text-zinc-600">
+                Spendora analyzed this AI tooling stack and identified
+                potential subscription inefficiencies, redundant spend,
+                and optimization opportunities.
+              </p>
 
-      {/* ─── AI Summary ───────────────────────────────────────── */}
+              {publicAudit.aiSummary ? (
+                <div className="mt-8 rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+                    Executive Summary
+                  </p>
 
-      {publicAudit.aiSummary ? (
-        <section className="mb-10 rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
-          <h2 className="mb-3 text-lg font-semibold">
-            Executive Summary
+                  <p className="mt-3 leading-8 text-zinc-700">
+                    {publicAudit.aiSummary}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 lg:w-[320px]">
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                <p className="text-sm text-zinc-500">
+                  Monthly Savings
+                </p>
+
+                <p className="mt-3 text-3xl font-bold text-zinc-950">
+                  {formatUSD(
+                    publicAudit.totalMonthlySavings
+                  )}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                <p className="text-sm text-zinc-500">
+                  Tools Audited
+                </p>
+
+                <p className="mt-3 text-3xl font-bold text-zinc-950">
+                  {publicAudit.tools.length}
+                </p>
+              </div>
+
+              <div className="col-span-2 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                <p className="text-sm text-zinc-500">
+                  Generated
+                </p>
+
+                <p className="mt-3 text-sm font-medium text-zinc-800">
+                  {new Date(
+                    publicAudit.createdAt
+                  ).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── Recommendations ───────────────────────── */}
+
+        <section className="mt-12">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-950">
+                Tool Recommendations
+              </h2>
+
+              <p className="mt-2 text-zinc-600">
+                Optimization opportunities identified across the audited AI stack.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-5">
+            {publicAudit.tools.map(
+              (
+                tool: ToolAuditResult
+              ) => (
+                <div
+                  key={
+                    tool.toolId
+                  }
+                  className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
+                >
+                  <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="text-2xl font-semibold text-zinc-950">
+                          {toolLabel(
+                            tool.toolId
+                          )}
+                        </h3>
+
+                        <span
+                          className={`rounded-full border px-3 py-1 text-xs font-semibold ${confidenceClasses(
+                            tool
+                              .recommendation
+                              .confidence
+                          )}`}
+                        >
+                          {tool
+                            .recommendation
+                            .confidence ??
+                            "unknown"}{" "}
+                          confidence
+                        </span>
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-3">
+                        <div className="rounded-xl bg-zinc-100 px-4 py-2 text-sm text-zinc-700">
+                          Current Spend:{" "}
+                          <span className="font-semibold">
+                            {formatUSD(
+                              tool.currentSpend
+                            )}
+                            /mo
+                          </span>
+                        </div>
+
+                        <div className="rounded-xl bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+                          {actionLabel(
+                            tool
+                              .recommendation
+                              .action
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="mt-6">
+                        <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+                          Recommendation
+                        </p>
+
+                        <p className="mt-3 leading-7 text-zinc-700">
+                          {
+                            tool
+                              .recommendation
+                              .reason
+                          }
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="lg:min-w-45">
+                      <div className="rounded-2xl bg-green-50 p-5 text-center">
+                        <p className="text-sm font-medium text-green-700">
+                          Estimated Savings
+                        </p>
+
+                        <p className="mt-3 text-4xl font-bold text-green-600">
+                          {formatUSD(
+                            tool
+                              .recommendation
+                              .monthlySavings
+                          )}
+                        </p>
+
+                        <p className="mt-1 text-sm text-green-700">
+                          per month
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </section>
+
+        {/* ─── Share CTA ─────────────────────────────── */}
+
+        <section className="mt-14 rounded-3xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
+          <h2 className="text-3xl font-bold tracking-tight text-zinc-950">
+            Share this audit with your team
           </h2>
 
-          <p className="leading-7 text-zinc-700">
-            {publicAudit.aiSummary}
+          <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-zinc-600">
+            AI tooling costs scale faster than visibility.
+            Share this audit internally to identify operational waste
+            and optimization opportunities.
           </p>
         </section>
-      ) : null}
 
-      {/* ─── Tool Recommendations ─────────────────────────────── */}
+        {/* ─── Footer ───────────────────────────────── */}
 
-      <section>
-        <h2 className="mb-6 text-2xl font-semibold">
-          Tool Recommendations
-        </h2>
+        <footer className="mt-14 border-t border-zinc-200 pt-6 text-sm text-zinc-500">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+            <p>
+              Generated by Spendora
+            </p>
 
-        <div className="space-y-4">
-          {publicAudit.tools.map(
-            (tool: AuditRow["results"][number]) => (
-              <div
-                key={
-                  tool.toolId
-                }
-                className="rounded-2xl border border-zinc-200 p-5"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-lg font-semibold">
-                      {toolLabel(
-                        tool.toolId
-                      )}
-                    </h3>
-
-                    <p className="mt-1 text-sm text-zinc-500">
-                      Current Spend:
-                      {" "}
-                      {formatUSD(
-                        tool.currentSpend
-                      )}
-                      /mo
-                    </p>
-                  </div>
-
-                  <div className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
-                    Save{" "}
-                    {formatUSD(
-                      tool.recommendation
-                        .monthlySavings
-                    )}
-                    /mo
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <p className="text-sm font-medium uppercase tracking-wide text-zinc-500">
-                    Recommendation
-                  </p>
-
-                  <p className="mt-1 text-zinc-700">
-                    {
-                      tool
-                        .recommendation
-                        .reason
-                    }
-                  </p>
-                </div>
-              </div>
-            )
-          )}
-        </div>
-      </section>
-
-      {/* ─── Footer ───────────────────────────────────────────── */}
-
-      <footer className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-500">
-        Generated by Spendora
-      </footer>
+            <p>
+              AI tooling optimization for modern teams
+            </p>
+          </div>
+        </footer>
+      </div>
     </main>
   );
 }

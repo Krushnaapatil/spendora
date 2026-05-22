@@ -4,7 +4,7 @@
 
 **Role:** Software Engineer  
 **Company Stage:** Mid-sized product/service company  
-**Interview Date:** 2026-05-22  
+**Interview Date:** 2026-05-20  
 **Interview Type:** Informal chat conversation
 
 ### Conversation Summary
