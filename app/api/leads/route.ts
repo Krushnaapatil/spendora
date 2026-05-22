@@ -42,9 +42,10 @@ import {
 
 import { db } from "@/lib/supabase";
 
+import type { Database } from "@/lib/database.types";
+
 import type {
   LeadApiResponse,
-  LeadRow,
 } from "@/lib/types";
 
 // ─── POST /api/leads ──────────────────────────────────────────────────────
@@ -134,12 +135,9 @@ export async function POST(
   // ── Step 5: Persist Lead ────────────────────────────────────────
 
   const leadInsert: Omit<
-    LeadRow,
+    Database["public"]["Tables"]["leads"]["Insert"],
     "id" | "created_at"
   > = {
-    audit_id:
-      input.auditId,
-
     email:
       input.email,
 
@@ -151,12 +149,6 @@ export async function POST(
 
     team_size:
       input.teamSize,
-
-    source:
-      input.source,
-
-    created_from_ip:
-      ip,
   };
 
   const { error: dbError } = await db

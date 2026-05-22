@@ -37,8 +37,12 @@ import {
 } from "@/lib/http";
 
 import type {
+  Database,
+  Json,
+} from "@/lib/database.types";
+
+import type {
   AuditApiResponse,
-  AuditRow,
 } from "@/lib/types";
 
 // ─── POST /api/audit ─────────────────────────────────────────────────────
@@ -100,14 +104,14 @@ export async function POST(
   // ── Step 5: Build DB Payload ────────────────────────────────────────
 
   const auditInsert: Omit<
-    AuditRow,
+    Database["public"]["Tables"]["audits"]["Insert"],
     "id" | "created_at"
   > = {
-    tools_data:
-      input.tools,
+    tools:
+      input.tools as unknown as Json,
 
     results:
-      result.tools,
+      result.tools as unknown as Json,
 
     total_monthly_savings:
       result.totalMonthlySavings,
@@ -115,11 +119,14 @@ export async function POST(
     total_annual_savings:
       result.totalAnnualSavings,
 
-    use_case:
-      input.useCase,
+    total_savings:
+      result.totalAnnualSavings,
 
-    team_size:
-      input.teamSize,
+    summary:
+      null,
+
+    ai_summary:
+      null,
   };
 
   // ── Step 6: Persist ─────────────────────────────────────────────────
