@@ -152,6 +152,9 @@ export async function POST(
     ai_summary:
       summaryResult.summary,
 
+    summary_source:
+      summaryResult.source,
+
     team_size:
       input.teamSize,
 
