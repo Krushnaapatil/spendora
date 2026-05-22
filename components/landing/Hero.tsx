@@ -2,6 +2,7 @@ import {
   AUDIT_RECOMMENDATIONS,
   SUPPORTED_TOOLS,
 } from "@/data/landing";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -26,15 +27,21 @@ export default function Hero() {
 
           {/* CTA */}
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <button className="rounded-2xl bg-zinc-950 px-8 py-4 text-lg font-semibold text-white transition hover:bg-zinc-800">
-              Run free audit
-            </button>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+  <Link
+    href="/audit/new"
+    className="rounded-2xl bg-zinc-950 px-8 py-4 text-lg font-semibold text-white transition hover:bg-zinc-800"
+  >
+    Run Free Audit
+  </Link>
 
-            <button className="rounded-2xl border border-zinc-300 bg-white px-8 py-4 text-lg font-semibold text-zinc-900 transition hover:bg-zinc-100">
-              See example report
-            </button>
-          </div>
+  <a
+    href="#example-audit"
+    className="rounded-2xl border border-zinc-200 bg-white px-8 py-4 text-lg font-semibold text-zinc-700 transition hover:bg-zinc-100"
+  >
+    See Example Report
+  </a>
+</div>
 
           {/* Supported Tools */}
 
