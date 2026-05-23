@@ -71,9 +71,12 @@ export default function Navbar({
             GitHub
           </a>
 
-          <button className="rounded-xl bg-zinc-950 px-5 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800">
+          <Link
+            href="/audit/new"
+            className="rounded-xl bg-zinc-950 px-5 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
+          >
             Run Free Audit
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -116,9 +119,12 @@ export default function Navbar({
               )
             )}
 
-            <button className="mt-2 rounded-xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white">
+            <Link
+              href="/audit/new"
+              className="mt-2 rounded-xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white"
+            >
               Run Free Audit
-            </button>
+            </Link>
           </div>
         </div>
       ) : null}

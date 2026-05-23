@@ -1,6 +1,9 @@
 export default function TrustSection() {
   return (
-    <section className="relative overflow-hidden border-b border-zinc-200 bg-white">
+    <section
+      id="pricing-data"
+      className="relative overflow-hidden border-b border-zinc-200 bg-white scroll-mt-24"
+    >
       {/* Background */}
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.03),transparent_45%)]" />
