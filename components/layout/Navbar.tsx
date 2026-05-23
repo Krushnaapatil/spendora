@@ -63,7 +63,7 @@ export default function Navbar({
 
         <div className="hidden items-center gap-3 md:flex">
           <a
-            href="https://github.com"
+            href="https://github.com/Krushnaapatil/spendora"
             target="_blank"
             rel="noreferrer"
             className="rounded-xl border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"

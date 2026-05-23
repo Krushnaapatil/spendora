@@ -1,3 +1,7 @@
+import {
+  PRICING_LAST_VERIFIED,
+} from "@/lib/pricing";
+
 export default function TrustSection() {
   return (
     <section
@@ -28,6 +32,10 @@ export default function TrustSection() {
               sense to someone reviewing operational spend.
             </p>
 
+            <div className="mt-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-600">
+              Pricing sources are documented in <span className="font-semibold text-zinc-900">PRICING_DATA.md</span> and were last verified on <span className="font-semibold text-zinc-900">{PRICING_LAST_VERIFIED}</span>.
+            </div>
+
             <div className="mt-12 space-y-5">
               <div className="flex items-start gap-4">
                 <div className="mt-2 h-2.5 w-2.5 rounded-full bg-green-500" />
@@ -50,7 +58,7 @@ export default function TrustSection() {
 
                 <p className="text-lg text-zinc-700">
                   Pricing references are verified against official vendor
-                  pricing pages.
+                  pricing pages and tied to source URLs in the docs.
                 </p>
               </div>
 
