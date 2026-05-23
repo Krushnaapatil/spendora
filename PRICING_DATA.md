@@ -4,6 +4,11 @@
 
 Spendora recommendations rely on deterministic pricing logic.
 
+Last verified: 2026-05-23
+
+Canonical source of truth:
+- `lib/pricing.ts`
+
 All pricing data is sourced from official vendor pricing pages whenever possible.
 
 Prices are periodically reviewed manually because:
@@ -76,8 +81,8 @@ Spendora currently assumes:
 
 | Plan | Monthly Price | Billing Model | Official Source |
 |---|---|---|---|
-| Pro | $20 | Monthly | https://one.google.com/about/ai-premium/ |
-| Ultra | Variable | Monthly | https://deepmind.google/technologies/gemini/ |
+| Pro | $19.99 | Monthly | https://one.google.com/about/plans |
+| Ultra | $124.99 promo | Monthly | https://one.google.com/about/plans |
 
 ### Notes
 - Gemini branding and pricing evolve frequently
@@ -91,6 +96,7 @@ Spendora currently assumes:
 |---|---|---|---|
 | Free | $0 | Monthly | https://codeium.com/windsurf |
 | Pro | $15 | Monthly | https://codeium.com/windsurf |
+| Team | $35 | Monthly | https://codeium.com/windsurf |
 
 ### Notes
 - Windsurf pricing is evolving quickly during product expansion

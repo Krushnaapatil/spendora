@@ -7,6 +7,27 @@
  * Prices are USD per seat/month unless otherwise noted.
  */
 
+export const PRICING_LAST_VERIFIED =
+  "2026-05-23";
+
+export const PRICING_SOURCES = {
+  cursor: "https://cursor.com/pricing",
+  githubCopilot:
+    "https://github.com/features/copilot/plans",
+  chatgpt:
+    "https://openai.com/chatgpt/pricing",
+  claude:
+    "https://www.anthropic.com/pricing",
+  gemini:
+    "https://one.google.com/about/plans",
+  windsurf:
+    "https://codeium.com/windsurf",
+  openaiApi:
+    "https://openai.com/api/pricing",
+  anthropicApi:
+    "https://www.anthropic.com/pricing#api",
+} as const;
+
 // ─── Shared Types ────────────────────────────────────────────────────────────
 
 export type PricingValue = number | null;
@@ -52,8 +73,8 @@ export const PRICING = {
   },
 
   gemini: {
-    pro: 20,
-    ultra: null,
+    pro: 19.99,
+    ultra: 124.99,
     api: null,
   },
 
