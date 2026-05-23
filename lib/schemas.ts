@@ -279,9 +279,23 @@ export const auditShareEmailRequestSchema =
     })
     .strict();
 
+export const auditLinkRequestSchema =
+  z
+    .object({
+      auditId: z.string().uuid({
+        message: "Invalid audit ID",
+      }),
+    })
+    .strict();
+
 export type AuditShareEmailRequestBody =
   z.infer<
     typeof auditShareEmailRequestSchema
+  >;
+
+export type AuditLinkRequestBody =
+  z.infer<
+    typeof auditLinkRequestSchema
   >;
 
 export type LeadRequestBody =

@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
 import { createClient } from "@/lib/supabase-browser";
 
@@ -12,17 +15,28 @@ type AuthMode =
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const supabase =
     createClient();
 
   const [mode, setMode] =
     useState<AuthMode>(
-      "login"
+      searchParams.get("mode") === "signup"
+        ? "signup"
+        : "login"
     );
 
   const [email, setEmail] =
     useState("");
+
+  const [auditId] = useState(
+    searchParams.get("auditId") ?? ""
+  );
+
+  const [redirectTo] = useState(
+    searchParams.get("next") ?? "/audits"
+  );
 
   const [
     password,
@@ -66,54 +80,96 @@ export default function LoginPage() {
         );
       }
 
-      if (
-        mode === "login"
-      ) {
-        const { error } =
-          await supabase.auth.signInWithPassword(
-            {
-              email,
-              password,
-            }
-          );
+      if (mode === "login") {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
         if (error) {
           throw error;
         }
 
-        setSuccess(
-          "Successfully signed in. Redirecting..."
-        );
+        const sessionResult = await supabase.auth.getSession();
+        const session = sessionResult.data.session;
+
+        if (!session) {
+          throw new Error(
+            "Login succeeded but auth session could not be established. Please refresh and try again."
+          );
+        }
+
+        if (auditId) {
+          const accessToken = session.access_token;
+
+          const response = await fetch("/api/audit/link", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+              auditId,
+            }),
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Failed to link audit after login.");
+          }
+        }
+
+        setSuccess("Successfully signed in. Redirecting...");
 
         setTimeout(() => {
-          router.push(
-            "/audits"
-          );
-
+          router.push(redirectTo);
           router.refresh();
         }, 1200);
       } else {
-        const { error } =
-          await supabase.auth.signUp(
-            {
-              email,
-              password,
-            }
-          );
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
 
         if (error) {
           throw error;
         }
 
-        setSuccess(
-          "Account created successfully. Redirecting..."
-        );
+        const sessionResult = await supabase.auth.getSession();
+        const session = sessionResult.data.session;
+
+        if (!session) {
+          setSuccess(
+            "Account created. Please confirm your email before signing in."
+          );
+          setLoading(false);
+          return;
+        }
+
+        if (auditId) {
+          const accessToken = session.access_token;
+
+          const response = await fetch("/api/audit/link", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+              auditId,
+            }),
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || "Failed to link audit after signup.");
+          }
+        }
+
+        setSuccess("Account created successfully. Redirecting...");
 
         setTimeout(() => {
-          router.push(
-            "/audits"
-          );
-
+          router.push(redirectTo);
           router.refresh();
         }, 1200);
       }
