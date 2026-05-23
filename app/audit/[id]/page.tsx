@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type {
   Metadata,
 } from "next";
@@ -473,6 +474,29 @@ export default async function AuditPage(
             />
           </div>
         </section>
+
+        {audit.user_id === null ? (
+          <section className="mt-14 rounded-3xl border border-dashed border-zinc-200 bg-white p-8 text-center shadow-sm">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              Save this audit permanently
+            </p>
+
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-zinc-950">
+              Create an account to keep this audit in your dashboard.
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-zinc-600">
+              Your audit is currently anonymous. Sign up now and Spendora will link this audit to your account so it appears in your history.
+            </p>
+
+            <Link
+              href={`/login?mode=signup&auditId=${publicAudit.id}&next=/audits`}
+              className="mt-8 inline-flex items-center justify-center rounded-2xl bg-zinc-950 px-6 py-4 text-sm font-semibold text-white transition hover:bg-zinc-800"
+            >
+              Save this audit
+            </Link>
+          </section>
+        ) : null}
 
         {/* ─── Footer ───────────────────────────────── */}
 

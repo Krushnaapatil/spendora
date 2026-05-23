@@ -2,6 +2,7 @@
 
 import {
   useState,
+  useEffect,
   type FormEvent,
 } from "react";
 
@@ -34,14 +35,13 @@ export default function ShareAuditCard({
     string | null
   >(null);
   const [honeypot, setHoneypot] = useState("");
+  const [shareUrl, setShareUrl] = useState(sharePath);
 
-  const shareUrl =
-    typeof window === "undefined"
-      ? sharePath
-      : new URL(
-          sharePath,
-          window.location.origin
-        ).toString();
+  useEffect(() => {
+    setShareUrl(
+      new URL(sharePath, window.location.origin).toString()
+    );
+  }, [sharePath]);
 
   async function copyShareLink() {
     try {
