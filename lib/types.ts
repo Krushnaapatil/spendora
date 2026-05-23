@@ -169,3 +169,9 @@ export interface LeadApiResponse {
   success: boolean;
   emailSent: boolean;
 }
+
+export interface AuditShareEmailResponse {
+  success: boolean;
+  emailSent: boolean;
+  shareUrl: string;
+}

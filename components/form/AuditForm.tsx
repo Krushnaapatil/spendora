@@ -27,6 +27,14 @@ interface FormState {
   tools: ToolRow[];
 }
 
+const VALID_USE_CASES = [
+  "coding",
+  "writing",
+  "data",
+  "research",
+  "mixed",
+] as const;
+
 const STORAGE_KEY =
   "spendora-audit-form";
 
@@ -67,11 +75,40 @@ function normalizeToolRow(
   };
 }
 
+function normalizeUseCase(
+  value: string
+): string {
+  return VALID_USE_CASES.includes(
+    value as (typeof VALID_USE_CASES)[number]
+  )
+    ? value
+    : DEFAULT_FORM_STATE.useCase;
+}
+
+function normalizeTeamSize(
+  value: number | string
+): number {
+  const numeric =
+    typeof value === "number"
+      ? value
+      : Number(value);
+
+  return Number.isFinite(numeric) && numeric > 0
+    ? Math.round(numeric)
+    : DEFAULT_FORM_STATE.teamSize;
+}
+
 function normalizeFormState(
   state: FormState
 ): FormState {
   return {
     ...state,
+    teamSize: normalizeTeamSize(
+      state.teamSize
+    ),
+    useCase: normalizeUseCase(
+      state.useCase
+    ),
     tools: state.tools.map(
       normalizeToolRow
     ),
@@ -310,8 +347,13 @@ export default function AuditForm() {
   ) {
     e.preventDefault();
 
+    const normalizedState =
+      normalizeFormState(
+        formState
+      );
+
     if (
-      tools.length === 0
+      normalizedState.tools.length === 0
     ) {
       setError(
         "Add at least one AI subscription."
@@ -326,11 +368,13 @@ export default function AuditForm() {
       setIsSubmitting(true);
 
       const payload = {
-        teamSize,
+        teamSize:
+          normalizedState.teamSize,
 
-        useCase,
+        useCase:
+          normalizedState.useCase,
 
-        tools: tools.map(
+        tools: normalizedState.tools.map(
           (
             tool: ToolRow
           ) => ({

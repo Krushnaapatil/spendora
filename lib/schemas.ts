@@ -62,7 +62,7 @@ export const anyPlanSchema =
 
 // Shared currency validation
 const moneySchema = z
-  .number()
+  .coerce.number()
   .min(
     0,
     "Value cannot be negative"
@@ -70,7 +70,7 @@ const moneySchema = z
 
 // Shared positive integer validation
 const positiveIntSchema = z
-  .number()
+  .coerce.number()
   .int(
     "Must be a whole number"
   )
@@ -268,6 +268,21 @@ export const leadRequestSchema = z
       }),
   })
   .strict();
+
+/**
+ * POST /api/audit/[id]/share request body
+ */
+export const auditShareEmailRequestSchema =
+  z
+    .object({
+      email: z.string().trim().toLowerCase().email("Invalid email address"),
+    })
+    .strict();
+
+export type AuditShareEmailRequestBody =
+  z.infer<
+    typeof auditShareEmailRequestSchema
+  >;
 
 export type LeadRequestBody =
   z.infer<
