@@ -21,6 +21,8 @@ import {
   toolLabel,
 } from "@/lib/utils";
 
+import ShareAuditCard from "@/components/audit/ShareAuditCard";
+
 // ─── Route Params ─────────────────────────────────────────────────────────
 
 interface AuditPageProps {
@@ -129,8 +131,8 @@ function confidenceClasses(
     case "medium":
       return "bg-yellow-100 text-yellow-700 border-yellow-200";
 
-    case "low":
-      return "bg-red-100 text-red-700 border-red-200";
+    case "exploratory":
+      return "bg-blue-100 text-blue-700 border-blue-200";
 
     default:
       return "bg-zinc-100 text-zinc-700 border-zinc-200";
@@ -144,19 +146,28 @@ function actionLabel(
 ): string {
   switch (action) {
     case "downgrade":
-      return "Downgrade Plan";
+      return "Downgrade Team Plan";
 
     case "switch":
-      return "Switch Tool";
+      return "Consolidate Tooling";
 
     case "credits":
-      return "Optimize Credits";
+      return "Reduce Retail Spend";
+
+    case "seat_mismatch":
+      return "Optimize Seat Allocation";
+
+    case "overlap":
+      return "Remove Workflow Overlap";
+
+    case "unused":
+      return "Remove Underused Tool";
 
     case "optimal":
-      return "Already Optimized";
+      return "Configuration Already Efficient";
 
     default:
-      return action;
+      return "Optimization Opportunity";
   }
 }
 
@@ -241,6 +252,22 @@ export default async function AuditPage(
                   <p className="mt-3 leading-8 text-zinc-700">
                     {publicAudit.aiSummary}
                   </p>
+
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    <div className="rounded-xl bg-green-100 px-4 py-2 text-sm font-medium text-green-700">
+                      {formatUSD(
+                        publicAudit.totalMonthlySavings
+                      )}/mo identified
+                    </div>
+
+                    <div className="rounded-xl bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-700">
+                      {publicAudit.tools.length} tools analyzed
+                    </div>
+
+                    <div className="rounded-xl bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+                      Deterministic pricing audit
+                    </div>
+                  </div>
                 </div>
               ) : null}
             </div>
@@ -276,7 +303,7 @@ export default async function AuditPage(
                 <p className="mt-3 text-sm font-medium text-zinc-800">
                   {new Date(
                     publicAudit.createdAt ??
-                      new Date().toISOString()
+                    new Date().toISOString()
                   ).toLocaleDateString()}
                 </p>
               </div>
@@ -328,9 +355,15 @@ export default async function AuditPage(
                         >
                           {tool
                             .recommendation
-                            .confidence ??
-                            "unknown"}{" "}
-                          confidence
+                            .confidence ===
+                            "high"
+                            ? "High confidence"
+                            : tool
+                              .recommendation
+                              .confidence ===
+                              "medium"
+                              ? "Medium confidence"
+                              : "Exploratory recommendation"}
                         </span>
                       </div>
 
@@ -407,6 +440,12 @@ export default async function AuditPage(
             Share this audit internally to identify operational waste
             and optimization opportunities.
           </p>
+
+          <div className="mx-auto max-w-2xl">
+            <ShareAuditCard
+              sharePath={`/audit/${publicAudit.id}`}
+            />
+          </div>
         </section>
 
         {/* ─── Footer ───────────────────────────────── */}
