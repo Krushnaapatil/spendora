@@ -21,6 +21,10 @@ import {
   toolLabel,
 } from "@/lib/utils";
 
+import {
+  SPENDORA_CTA_THRESHOLD,
+} from "@/lib/pricing";
+
 import ShareAuditCard from "@/components/audit/ShareAuditCard";
 import SiteNavbar from "@/components/layout/SiteNavbar";
 
@@ -446,7 +450,26 @@ export default async function AuditPage(
 
           <div className="mx-auto max-w-2xl">
             <ShareAuditCard
+              auditId={publicAudit.id}
               sharePath={`/audit/${publicAudit.id}`}
+              monthlySavings={
+                publicAudit.totalMonthlySavings
+              }
+              annualSavings={
+                publicAudit.totalAnnualSavings
+              }
+              toolCount={
+                publicAudit.tools.length
+              }
+              summary={
+                publicAudit.aiSummary ??
+                publicAudit.summary ??
+                null
+              }
+              highSavings={
+                publicAudit.totalMonthlySavings >=
+                SPENDORA_CTA_THRESHOLD
+              }
             />
           </div>
         </section>
