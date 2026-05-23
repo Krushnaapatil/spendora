@@ -28,6 +28,12 @@ import {
   jsonResponse,
 } from "@/lib/http";
 
+import { env } from "@/lib/env";
+
+import {
+  SPENDORA_CTA_THRESHOLD,
+} from "@/lib/pricing";
+
 import {
   leadsRateLimit,
   getClientIp,
@@ -182,9 +188,40 @@ export async function POST(
 
   // ── Step 6: Send Email ──────────────────────────────────────────
 
+  const { data: audit } = await db
+    .admin()
+    .from("audits")
+    .select(
+      "id,total_monthly_savings,total_annual_savings,summary,ai_summary"
+    )
+    .eq("id", input.auditId)
+    .maybeSingle();
+
   const emailSent =
     await sendLeadConfirmationEmail(
-      input.email
+      input.email,
+      audit
+        ? {
+            auditUrl: new URL(
+              `/audit/${audit.id}`,
+              env.NEXT_PUBLIC_APP_URL
+            ).toString(),
+            monthlySavings:
+              audit.total_monthly_savings ??
+              0,
+            annualSavings:
+              audit.total_annual_savings ??
+              0,
+            highSavings:
+              (audit.total_monthly_savings ??
+                0) >=
+              SPENDORA_CTA_THRESHOLD,
+            summary:
+              audit.summary ??
+              audit.ai_summary ??
+              null,
+          }
+        : undefined
     );
 
   if (!emailSent) {
