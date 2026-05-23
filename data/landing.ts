@@ -1,19 +1,19 @@
 export const NAV_LINKS = [
   {
     label: "Features",
-    href: "#features",
+    href: "/#features",
   },
   {
     label: "How It Works",
-    href: "#how-it-works",
+    href: "/#how-it-works",
   },
   {
     label: "Pricing Data",
-    href: "#pricing-data",
+    href: "/#pricing-data",
   },
   {
     label: "Example Audit",
-    href: "#example-audit",
+    href: "/#example-audit",
   },
 ];
 

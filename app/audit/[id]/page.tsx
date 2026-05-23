@@ -22,6 +22,7 @@ import {
 } from "@/lib/utils";
 
 import ShareAuditCard from "@/components/audit/ShareAuditCard";
+import SiteNavbar from "@/components/layout/SiteNavbar";
 
 // ─── Route Params ─────────────────────────────────────────────────────────
 
@@ -217,7 +218,9 @@ export default async function AuditPage(
 
   return (
     <main className="min-h-screen bg-zinc-50">
-      <div className="mx-auto max-w-6xl px-6 py-12">
+      <SiteNavbar />
+
+      <div className="mx-auto max-w-6xl px-6 py-12 pt-24">
         {/* ─── Hero ───────────────────────────────────── */}
 
         <section className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm lg:p-12">
