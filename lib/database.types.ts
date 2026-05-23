@@ -28,6 +28,7 @@ export type Database = {
           total_monthly_savings: number | null
           total_savings: number | null
           use_case: string | null
+          user_id: string | null
         }
         Insert: {
           ai_summary?: string | null
@@ -42,6 +43,7 @@ export type Database = {
           total_monthly_savings?: number | null
           total_savings?: number | null
           use_case?: string | null
+          user_id?: string | null
         }
         Update: {
           ai_summary?: string | null
@@ -56,6 +58,7 @@ export type Database = {
           total_monthly_savings?: number | null
           total_savings?: number | null
           use_case?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }

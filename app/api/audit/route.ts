@@ -17,6 +17,7 @@ export const runtime = "nodejs";
 
 import { runAudit } from "@/lib/auditEngine";
 import { generateAuditSummary } from "@/lib/ai";
+import { createClient } from "@/lib/supabase-server";
 
 import {
   auditRateLimit,
@@ -121,6 +122,14 @@ export async function POST(
       result
     );
 
+    const supabase =
+  await createClient();
+
+const {
+  data: { user },
+} =
+  await supabase.auth.getUser();
+
   // ── Step 5: Build DB Payload ────────────────────────────────────────
 
   const auditInsert: Omit<
@@ -160,6 +169,9 @@ export async function POST(
 
     use_case:
       input.useCase,
+
+    user_id:
+      user?.id ?? null,
   };
 
   // ── Step 6: Persist ─────────────────────────────────────────────────
