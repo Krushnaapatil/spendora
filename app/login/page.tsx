@@ -2,7 +2,21 @@ import { Suspense } from "react";
 
 import LoginContent from "./login-content";
 
-export default function LoginPage() {
+interface LoginPageProps {
+  searchParams?: Promise<{
+    mode?: string;
+    auditId?: string;
+    next?: string;
+  }>;
+}
+
+export default async function LoginPage({
+  searchParams,
+}: LoginPageProps) {
+  const params = searchParams
+    ? await searchParams
+    : {};
+
   return (
     <Suspense
       fallback={
@@ -16,8 +30,16 @@ export default function LoginPage() {
           </div>
         </main>
       }
-    >
-      <LoginContent />
+      >
+      <LoginContent
+        initialMode={
+          params.mode === "signup"
+            ? "signup"
+            : "login"
+        }
+        auditId={params.auditId ?? ""}
+        redirectTo={params.next ?? "/audits"}
+      />
     </Suspense>
   );
 }

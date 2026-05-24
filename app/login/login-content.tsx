@@ -1,23 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import { linkAuditWithRetry } from "@/lib/utils";
 
 type AuthMode = "login" | "signup";
 
-export default function LoginContent() {
+interface LoginContentProps {
+  initialMode?: AuthMode;
+  auditId?: string;
+  redirectTo?: string;
+}
+
+export default function LoginContent({
+  initialMode = "login",
+  auditId = "",
+  redirectTo = "/audits",
+}: LoginContentProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const supabase = createClient();
 
   const [mode, setMode] = useState<AuthMode>(
-    searchParams.get("mode") === "signup" ? "signup" : "login"
+    initialMode
   );
   const [email, setEmail] = useState("");
-  const [auditId] = useState(searchParams.get("auditId") ?? "");
-  const [redirectTo] = useState(searchParams.get("next") ?? "/audits");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
