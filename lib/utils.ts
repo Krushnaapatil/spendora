@@ -314,7 +314,7 @@ export async function linkAuditWithRetry(
       }
 
       // For 429 or 5xx, fallthrough to retry
-    } catch (err) {
+    } catch {
       // network error — will retry
     }
 

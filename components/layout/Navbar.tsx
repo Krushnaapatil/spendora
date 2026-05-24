@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { User } from "@supabase/supabase-js";
 
 import { createClient } from "@/lib/supabase-browser";
 import {
@@ -26,7 +27,7 @@ export default function Navbar({
 
   const supabase = useMemo(() => createClient(), []);
 
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -36,7 +37,7 @@ export default function Navbar({
         const { data } = await supabase.auth.getUser();
         if (!mounted) return;
         setUser(data.user ?? null);
-      } catch (err) {
+      } catch {
         if (!mounted) return;
         setUser(null);
       }

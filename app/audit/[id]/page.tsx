@@ -4,6 +4,7 @@ import type {
 } from "next";
 
 import type {
+  SummarySource,
   ToolAuditResult,
 } from "@/lib/types";
 
@@ -11,11 +12,7 @@ import {
   notFound,
 } from "next/navigation";
 
-import { db } from "@/lib/supabase";
-
-import type {
-  Database,
-} from "@/lib/database.types";
+import { getAuditById } from "@/lib/auditData";
 
 import {
   formatUSD,
@@ -29,6 +26,8 @@ import {
 import ShareAuditCard from "@/components/audit/ShareAuditCard";
 import SiteNavbar from "@/components/layout/SiteNavbar";
 import ConsolidationSummary from "@/components/audit/ConsolidationSummary";
+import AuditReportSummary from "@/components/audit/AuditReportSummary";
+import { env } from "@/lib/env";
 
 // ─── Route Params ─────────────────────────────────────────────────────────
 
@@ -36,38 +35,6 @@ interface AuditPageProps {
   params: Promise<{
     id: string;
   }>;
-}
-
-type AuditDbRow =
-  Database["public"]["Tables"]["audits"]["Row"];
-
-// ─── Fetch Audit ──────────────────────────────────────────────────────────
-
-async function getAudit(
-  id: string
-): Promise<AuditDbRow | null> {
-  const response =
-    await db
-      .admin()
-      .from("audits")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-  const typedResponse =
-    response as unknown as {
-      data: AuditDbRow | null;
-      error: Error | null;
-    };
-
-  if (
-    typedResponse.error ||
-    !typedResponse.data
-  ) {
-    return null;
-  }
-
-  return typedResponse.data;
 }
 
 // ─── Metadata ─────────────────────────────────────────────────────────────
@@ -78,10 +45,7 @@ export async function generateMetadata(
   const params =
     await props.params;
 
-  const audit =
-    await getAudit(
-      params.id
-    );
+  const audit = await getAuditById(params.id);
 
   if (!audit) {
     return {
@@ -192,10 +156,7 @@ export default async function AuditPage(
   const params =
     await props.params;
 
-  const audit =
-    await getAudit(
-      params.id
-    );
+  const audit = await getAuditById(params.id);
 
   if (!audit) {
     notFound();
@@ -226,7 +187,15 @@ export default async function AuditPage(
       Array.isArray(audit.results)
         ? (audit.results as unknown as ToolAuditResult[])
         : [],
+
+    summarySource: (audit.summary_source ??
+      "deterministic") as SummarySource,
   };
+
+  const shareUrl = new URL(
+    `/audit/${publicAudit.id}`,
+    env.NEXT_PUBLIC_APP_URL
+  ).toString();
 
   return (
     <main className="min-h-screen bg-zinc-50">
@@ -258,33 +227,33 @@ export default async function AuditPage(
                 and optimization opportunities.
               </p>
 
-              {publicAudit.aiSummary ? (
-                <div className="mt-8 rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-                    Executive Summary
-                  </p>
+              <div className="mt-8 rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
+                <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+                  Executive Summary
+                </p>
 
-                  <p className="mt-3 leading-8 text-zinc-700">
-                    {publicAudit.aiSummary}
-                  </p>
+                <AuditReportSummary
+                  auditId={publicAudit.id}
+                  initialSummary={
+                    publicAudit.aiSummary ??
+                    publicAudit.summary ??
+                    null
+                  }
+                  initialSource={publicAudit.summarySource}
+                />
 
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <div className="rounded-xl bg-green-100 px-4 py-2 text-sm font-medium text-green-700">
-                      {formatUSD(
-                        publicAudit.totalMonthlySavings
-                      )}/mo identified
-                    </div>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <div className="rounded-xl bg-green-100 px-4 py-2 text-sm font-medium text-green-700">
+                    {formatUSD(
+                      publicAudit.totalMonthlySavings
+                    )}/mo identified
+                  </div>
 
-                    <div className="rounded-xl bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-700">
-                      {publicAudit.tools.length} tools analyzed
-                    </div>
-
-                    <div className="rounded-xl bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
-                      Deterministic pricing audit
-                    </div>
+                  <div className="rounded-xl bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-700">
+                    {publicAudit.tools.length} tools analyzed
                   </div>
                 </div>
-              ) : null}
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 lg:w-[320px]">
@@ -342,8 +311,6 @@ export default async function AuditPage(
           </div>
 
           <div className="space-y-5">
-            {/* Consolidation summary */}
-            {/* @ts-ignore */}
             <ConsolidationSummary tools={publicAudit.tools} />
 
             {publicAudit.tools.map(
@@ -463,7 +430,7 @@ export default async function AuditPage(
           <div className="mx-auto max-w-2xl">
             <ShareAuditCard
               auditId={publicAudit.id}
-              sharePath={`/audit/${publicAudit.id}`}
+              shareUrl={shareUrl}
               monthlySavings={
                 publicAudit.totalMonthlySavings
               }

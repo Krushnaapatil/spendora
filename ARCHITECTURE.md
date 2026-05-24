@@ -33,7 +33,7 @@ G --> H[/audit/id]
 
 H --> I[AI Summary Layer]
 
-I --> J[Anthropic API]
+I --> J[OpenRouter API]
 ```
 
 ---
@@ -72,6 +72,11 @@ Chosen for:
 - managed Postgres
 - easy deployment
 - Row Level Security support
+
+RLS is defined in `supabase/migrations/20260524000000_enable_rls.sql`:
+- authenticated dashboard reads (owned + lead-linked audits)
+- `get_audit_public(uuid)` for shareable report pages without exposing table scans
+- service-role inserts from validated API routes only
 
 ## Zod
 Chosen for:

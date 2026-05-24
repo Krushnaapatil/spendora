@@ -18,7 +18,7 @@ import {
 import type { Database } from "@/lib/database.types";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { env } from "@/lib/env";
-import telemetry from "@/lib/telemetry";
+import { telemetry } from "@/lib/telemetry";
 
 export async function POST(
   req: Request

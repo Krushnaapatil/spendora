@@ -100,7 +100,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_audit_public: {
+        Args: {
+          p_id: string
+        }
+        Returns: Database["public"]["Tables"]["audits"]["Row"][]
+      }
     }
     Enums: {
       [_ in never]: never

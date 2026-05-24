@@ -1,11 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import type { Session, User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase-browser";
 
 type SessionContextValue = {
-  user: any | null;
-  session: any | null;
+  user: User | null;
+  session: Session | null;
 };
 
 const SessionContext = createContext<SessionContextValue>({
@@ -15,8 +16,8 @@ const SessionContext = createContext<SessionContextValue>({
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   const supabase = useMemo(() => createClient(), []);
-  const [session, setSession] = useState<any | null>(null);
-  const [user, setUser] = useState<any | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -27,7 +28,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         if (!mounted) return;
         setSession(data.session ?? null);
         setUser(data.session?.user ?? null);
-      } catch (err) {
+      } catch {
         if (!mounted) return;
         setSession(null);
         setUser(null);

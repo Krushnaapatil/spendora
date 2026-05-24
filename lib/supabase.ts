@@ -68,8 +68,14 @@ let _adminClient:
   | null = null;
 
 /**
- * Privileged server-only client.
- * Bypasses RLS.
+ * Privileged server-only client. Bypasses RLS.
+ *
+ * Use only for trusted server writes after validation:
+ * - POST /api/audit (insert)
+ * - POST /api/leads (insert)
+ * - syncAuditsForUser (bulk link by email)
+ *
+ * Prefer getAuditById() / anon clients for reads.
  */
 export function getAdminClient():
   TypedSupabaseClient {

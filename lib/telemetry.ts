@@ -35,7 +35,7 @@ export function captureEvent(
   }
 }
 
-export default {
+export const telemetry = {
   captureException,
   captureEvent,
 };

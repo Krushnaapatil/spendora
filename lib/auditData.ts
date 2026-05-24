@@ -5,6 +5,11 @@ import type { Database } from "@/lib/database.types";
 export type AuditRow =
   Database["public"]["Tables"]["audits"]["Row"];
 
+/**
+ * Fetch a single audit for public report pages.
+ *
+ * Uses the get_audit_public RPC so anonymous clients cannot list all audits.
+ */
 export async function getAuditById(
   id: string
 ): Promise<AuditRow | null> {
@@ -13,11 +18,11 @@ export async function getAuditById(
     .from("audits")
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     return null;
   }
 
-  return data;
+  return data as AuditRow;
 }

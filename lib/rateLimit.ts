@@ -274,6 +274,48 @@ export function leadsRateLimit(
   );
 }
 
+/**
+ * /api/audit/[id]/share
+ * 5 requests/IP/hour
+ */
+export function shareRateLimit(
+  ip: string
+): RateLimitResult {
+  return checkRateLimit(
+    `share:${ip}`,
+    5,
+    HOUR_MS
+  );
+}
+
+/**
+ * /api/summary
+ * 20 requests/IP/hour
+ */
+export function summaryRateLimit(
+  ip: string
+): RateLimitResult {
+  return checkRateLimit(
+    `summary:${ip}`,
+    20,
+    HOUR_MS
+  );
+}
+
+/**
+ * /api/telemetry
+ * 60 requests/IP/hour
+ */
+export function telemetryRateLimit(
+  ip: string
+): RateLimitResult {
+  return checkRateLimit(
+    `telemetry:${ip}`,
+    60,
+    HOUR_MS
+  );
+}
+
 // ─── IP Extraction ─────────────────────────────────────────────────────────
 
 /**
