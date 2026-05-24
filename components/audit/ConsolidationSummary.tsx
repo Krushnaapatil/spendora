@@ -2,10 +2,12 @@
 
 import React from "react";
 
+import type { ToolAuditResult } from "@/lib/types";
+
 export default function ConsolidationSummary({
   tools,
 }: {
-  tools: any[];
+  tools: ToolAuditResult[];
 }) {
   // Identify consolidated recommendations
   const consolidations = tools.filter((t) => t.recommendation.action === "consolidate");

@@ -17,9 +17,14 @@ import { auditShareEmailRequestSchema, safeParseBody } from "@/lib/schemas";
 
 import { env } from "@/lib/env";
 
-import { db } from "@/lib/supabase";
+import {
+  getClientIp,
+  rateLimitHeaders,
+  rateLimitResponse,
+  shareRateLimit,
+} from "@/lib/rateLimit";
 
-import type { Database } from "@/lib/database.types";
+import { getAuditById } from "@/lib/auditData";
 
 import type {
   AuditShareEmailResponse,
@@ -30,26 +35,6 @@ interface RouteParams {
   params: Promise<{
     id: string;
   }>;
-}
-
-type AuditRow =
-  Database["public"]["Tables"]["audits"]["Row"];
-
-async function getAudit(
-  id: string
-): Promise<AuditRow | null> {
-  const { data, error } = await db
-    .admin()
-    .from("audits")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error || !data) {
-    return null;
-  }
-
-  return data;
 }
 
 export async function POST(
@@ -82,9 +67,14 @@ export async function POST(
     );
   }
 
-  const audit = await getAudit(
-    params.id
-  );
+  const ip = getClientIp(req);
+  const rateLimit = shareRateLimit(ip);
+
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit);
+  }
+
+  const audit = await getAuditById(params.id);
 
   if (!audit) {
     return errorResponse(
@@ -134,6 +124,9 @@ export async function POST(
 
   return jsonResponse(response, {
     status: 200,
+    headers: {
+      ...rateLimitHeaders(rateLimit),
+    },
   });
 }
 

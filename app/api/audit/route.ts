@@ -1,4 +1,4 @@
-/**
+﻿/**
  * POST /api/audit
  *
  * Thin orchestration route.
@@ -9,14 +9,18 @@
  * → validate
  * → rate limit
  * → run audit
- * → persist
+ * → persist (deterministic summary first)
  * → respond
+ * → enrich AI summary in background
  */
 
 export const runtime = "nodejs";
 
+import { after } from "next/server";
+
 import { runAudit } from "@/lib/auditEngine";
-import { generateAuditSummary } from "@/lib/ai";
+import { fallbackSummary } from "@/lib/ai";
+import { enrichAuditWithAiSummary } from "@/lib/auditEnrichment";
 import { createClient as createServerClient } from "@/lib/supabase-server";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { env } from "@/lib/env";
@@ -63,14 +67,10 @@ function asPlainJson(value: unknown): Json {
   ) as Json;
 }
 
-// ─── POST /api/audit ─────────────────────────────────────────────────────
-
 export async function POST(
   req: Request
 ): Promise<Response> {
   const startedAt = Date.now();
-
-  // ── Step 1: Parse ──────────────────────────────────────────────────
 
   let body: unknown;
 
@@ -82,8 +82,6 @@ export async function POST(
       400
     );
   }
-
-  // ── Step 2: Validate ───────────────────────────────────────────────
 
   const parsed = safeParseBody(
     auditRequestSchema,
@@ -100,8 +98,6 @@ export async function POST(
 
   const input = parsed.data;
 
-  // ── Step 3: Rate Limit ──────────────────────────────────────────────
-
   const ip = getClientIp(req);
 
   const rateLimit =
@@ -113,16 +109,11 @@ export async function POST(
     );
   }
 
-  // ── Step 4: Run Audit ───────────────────────────────────────────────
-  // Pure synchronous business logic
-
   const result =
     runAudit(input);
 
-  const summaryResult =
-    await generateAuditSummary(
-      result
-    );
+  const immediateSummary =
+    fallbackSummary(result);
 
   const authHeader = req.headers.get(
     "authorization"
@@ -150,8 +141,6 @@ export async function POST(
     data: { user },
   } = await supabase.auth.getUser();
 
-  // ── Step 5: Build DB Payload ────────────────────────────────────────
-
   const auditInsert: Omit<
     Database["public"]["Tables"]["audits"]["Insert"],
     "id" | "created_at"
@@ -176,13 +165,13 @@ export async function POST(
       result.totalAnnualSavings,
 
     summary:
-      summaryResult.summary,
+      immediateSummary,
 
     ai_summary:
-      summaryResult.summary,
+      immediateSummary,
 
     summary_source:
-      summaryResult.source,
+      "deterministic",
 
     team_size:
       input.teamSize,
@@ -193,8 +182,6 @@ export async function POST(
     user_id:
       user?.id ?? null,
   };
-
-  // ── Step 6: Persist ─────────────────────────────────────────────────
 
   const {
     data: row,
@@ -232,7 +219,22 @@ export async function POST(
     );
   }
 
-  // ── Step 7: Respond ────────────────────────────────────────────────
+  after(async () => {
+    try {
+      await enrichAuditWithAiSummary(
+        row.id,
+        result
+      );
+    } catch (error) {
+      console.error(
+        "[audit] background summary enrichment failed",
+        {
+          auditId: row.id,
+          error,
+        }
+      );
+    }
+  });
 
   console.info(
     "[audit] audit created",
@@ -259,10 +261,10 @@ export async function POST(
     result: {
       ...result,
       aiSummary:
-        summaryResult.summary,
+        immediateSummary,
 
       summarySource:
-        summaryResult.source,
+        "deterministic" as const,
 
       id: row.id,
     },

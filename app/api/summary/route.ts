@@ -26,6 +26,13 @@ import {
 } from "@/lib/http";
 
 import {
+  getClientIp,
+  rateLimitHeaders,
+  rateLimitResponse,
+  summaryRateLimit,
+} from "@/lib/rateLimit";
+
+import {
   safeParseBody,
   summaryRequestSchema,
 } from "@/lib/schemas";
@@ -70,6 +77,13 @@ export async function POST(
       400,
       parsed.error.issues
     );
+  }
+
+  const ip = getClientIp(req);
+  const rateLimit = summaryRateLimit(ip);
+
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit);
   }
 
   const {
@@ -120,6 +134,9 @@ export async function POST(
     response,
     {
       status: 200,
+      headers: {
+        ...rateLimitHeaders(rateLimit),
+      },
     }
   );
 }
