@@ -133,13 +133,10 @@ User submits audit
 → Supabase persistence
 → shareable report rendering
 → authenticated ownership (optional)
-
+```
 
 ---
 
-# TECH STACK
-
-```md id="rm10"
 ## Tech Stack
 
 ### Frontend
@@ -165,24 +162,21 @@ User submits audit
 - API route tests
 - Audit engine tests
 
-
 ---
 
-# LOCAL DEVELOPMENT
-
-```md id="rm12"
 ## Local Development
 
 ### Install Dependencies
 
 ```bash
 npm install
-
+```
 
 ### Start Development Server
 
 ```bash
 npm run dev
+```
 
 ### Run Quality Checks
 
@@ -191,15 +185,10 @@ npm run lint
 npm run type-check
 npm test
 npm run build
-
+```
 
 ---
 
-# ENVIRONMENT VARIABLES
-
-CRITICAL.
-
-```md id="rm13"
 ## Environment Variables
 
 Create a `.env.local` file:
@@ -213,15 +202,10 @@ OPENROUTER_API_KEY=
 
 RESEND_API_KEY=
 FROM_EMAIL=
-
+```
 
 ---
 
-# PRODUCT DECISIONS
-
-VERY HIGH VALUE SECTION.
-
-```md id="rm14"
 ## Product Decisions
 
 ### Anonymous-First Onboarding
@@ -246,6 +230,8 @@ All pricing logic is centralized in `pricing.ts` to avoid fragmented business ru
 
 API routes are intentionally minimal and delegate business logic to isolated library modules.
 
+---
+
 ## Stability & Verification
 
 The project currently includes:
@@ -264,6 +250,8 @@ Verified flows:
 - audit sharing
 - audit ownership linking
 
+---
+
 ## Future Improvements
 
 Potential future improvements include:
@@ -275,6 +263,8 @@ Potential future improvements include:
 - richer overlap detection
 - recommendation confidence tuning
 
+---
+
 ## Reflection
 
 The most difficult parts of the project were not UI implementation, but:
@@ -285,6 +275,8 @@ The most difficult parts of the project were not UI implementation, but:
 - anonymous-to-authenticated state continuity
 
 One major product insight from building Spendora was that recommendation trust and operational clarity matter significantly more than AI-generated complexity.
+
+---
 
 ## License
 
