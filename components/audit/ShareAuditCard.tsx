@@ -2,13 +2,12 @@
 
 import {
   useState,
-  useEffect,
   type FormEvent,
 } from "react";
 
 interface ShareAuditCardProps {
   auditId: string;
-  sharePath: string;
+  shareUrl: string;
   monthlySavings: number;
   annualSavings: number;
   toolCount: number;
@@ -18,7 +17,7 @@ interface ShareAuditCardProps {
 
 export default function ShareAuditCard({
   auditId,
-  sharePath,
+  shareUrl,
   monthlySavings,
   annualSavings,
   toolCount,
@@ -35,13 +34,6 @@ export default function ShareAuditCard({
     string | null
   >(null);
   const [honeypot, setHoneypot] = useState("");
-  const [shareUrl, setShareUrl] = useState(sharePath);
-
-  useEffect(() => {
-    setShareUrl(
-      new URL(sharePath, window.location.origin).toString()
-    );
-  }, [sharePath]);
 
   async function copyShareLink() {
     try {

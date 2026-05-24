@@ -46,6 +46,7 @@ import {
   safeParseBody,
 } from "@/lib/schemas";
 
+import { getAuditById } from "@/lib/auditData";
 import { db } from "@/lib/supabase";
 
 import type { Database } from "@/lib/database.types";
@@ -191,14 +192,7 @@ export async function POST(
 
   // ── Step 6: Send Email ──────────────────────────────────────────
 
-  const { data: audit } = await db
-    .admin()
-    .from("audits")
-    .select(
-      "id,total_monthly_savings,total_annual_savings,summary,ai_summary"
-    )
-    .eq("id", input.auditId)
-    .maybeSingle();
+  const audit = await getAuditById(input.auditId);
 
   const emailSent =
     await sendLeadConfirmationEmail(
