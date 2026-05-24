@@ -58,6 +58,52 @@ async function getAudits(userId: string) {
   return (data as Audit[]) ?? [];
 }
 
+async function getLeadLinkedAuditIds(
+  email: string
+): Promise<string[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("leads")
+    .select("audit_id")
+    .eq("email", email.toLowerCase().trim())
+    .not("audit_id", "is", null);
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data
+    .map((lead) => lead.audit_id)
+    .filter(
+      (auditId): auditId is string => Boolean(auditId)
+    );
+}
+
+async function getLeadLinkedAudits(
+  auditIds: string[]
+) {
+  if (auditIds.length === 0) {
+    return [];
+  }
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("audits")
+    .select(
+      "id,created_at,summary,summary_source,total_monthly_savings,total_annual_savings,tools"
+    )
+    .in("id", auditIds)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data as Audit[]) ?? [];
+}
+
 export default async function AuditsPage() {
   const supabase = await createClient();
   const sessionResult = await supabase.auth.getSession();
@@ -71,7 +117,20 @@ export default async function AuditsPage() {
   }
 
   const audits = session
-    ? await getAudits(session.user.id)
+    ? Array.from(
+        new Map(
+          [
+            ...(await getAudits(session.user.id)),
+            ...(await getLeadLinkedAudits(
+              session.user.email
+                ? await getLeadLinkedAuditIds(
+                    session.user.email
+                  )
+                : []
+            )),
+          ].map((audit) => [audit.id, audit])
+        ).values()
+      )
     : [];
 
   return (

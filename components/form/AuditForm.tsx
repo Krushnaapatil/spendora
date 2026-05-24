@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -13,6 +14,7 @@ import {
   TOOL_PLANS,
   type ToolName,
 } from "@/lib/toolPlans";
+import { createClient } from "@/lib/supabase-browser";
 
 interface ToolRow {
   tool: ToolName;
@@ -151,6 +153,7 @@ function getStoredFormState(): FormState {
 
 export default function AuditForm() {
   const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
 
   const [
     mounted,
@@ -362,10 +365,15 @@ export default function AuditForm() {
       return;
     }
 
-    try {
-      setError("");
+      try {
+        setError("");
 
-      setIsSubmitting(true);
+        setIsSubmitting(true);
+
+      const sessionResult =
+        await supabase.auth.getSession();
+      const accessToken =
+        sessionResult.data.session?.access_token ?? null;
 
       const payload = {
         teamSize:
@@ -402,6 +410,11 @@ export default function AuditForm() {
             headers: {
               "Content-Type":
                 "application/json",
+              ...(accessToken
+                ? {
+                    Authorization: `Bearer ${accessToken}`,
+                  }
+                : {}),
             },
 
             body: JSON.stringify(
