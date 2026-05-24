@@ -1,84 +1,291 @@
 # Spendora
 
-Rule-based AI tooling audit platform. Teams submit their AI stack, get deterministic savings recommendations, an AI executive summary, and a shareable report.
+AI tooling cost optimization for modern teams.
 
-## Stack
+Spendora analyzes AI subscription stacks, detects operational inefficiencies, estimates potential savings, and generates shareable audit reports for teams using tools like ChatGPT, Claude, Gemini, Cursor, Copilot, and Windsurf.
 
-- **Next.js 16** (App Router)
-- **TypeScript** + **Zod** validation
-- **Supabase** (Postgres + Auth)
-- **OpenRouter** (AI summaries)
-- **Resend** (transactional email)
+## Demo
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for system design.
+Live App: https://spendora-aibuddy.vercel.app/
 
-## Prerequisites
+## Screenshots
 
-- Node.js 20+
-- Supabase project
-- OpenRouter API key
-- Resend API key
+### Landing Page
 
-## Setup
+![Landing Page](./public/screenshots/landing.png)
 
-1. Clone and install:
+### Audit Report
+
+![Audit Report](./public/screenshots/report.png)
+
+### Audit Dashboard
+
+![Audit Dashboard](./public/screenshots/dashboard.png)
+
+## The Problem
+
+AI tooling adoption inside startups and engineering teams has accelerated rapidly. Teams often subscribe to multiple overlapping products such as ChatGPT, Claude, Gemini, Cursor, GitHub Copilot, and Windsurf without clear operational visibility into usage efficiency or subscription overlap.
+
+As AI tooling stacks grow:
+- redundant subscriptions increase
+- seat allocation becomes inefficient
+- pricing structures become fragmented
+- optimization opportunities become difficult to identify
+
+Most teams currently manage AI spend manually through spreadsheets or finance reviews, which creates operational blind spots and unnecessary monthly costs.
+
+## The Solution
+
+Spendora provides a deterministic AI tooling audit system that:
+- analyzes subscription configurations
+- estimates optimization opportunities
+- identifies overlapping tooling patterns
+- generates executive summaries
+- creates shareable audit reports
+- enables authenticated audit history and persistence
+
+The platform combines:
+- deterministic pricing analysis
+- operational heuristics
+- AI-generated executive summaries
+- persistent audit ownership
+
+## Core Features
+
+### AI Spend Audits
+
+Analyze AI tooling stacks across products such as:
+- ChatGPT
+- Claude
+- Gemini
+- Cursor
+- GitHub Copilot
+- Windsurf
+
+### Deterministic Pricing Engine
+
+Spendora uses centralized pricing logic and threshold-based analysis to estimate:
+- monthly savings
+- annual savings
+- operational inefficiencies
+
+### AI Executive Summaries
+
+Audit reports include AI-generated executive summaries with deterministic fallbacks for reliability.
+
+### Authenticated Audit Ownership
+
+Users can:
+- create accounts
+- save audits
+- revisit historical reports
+- manage previous optimization workflows
+
+### Shareable Reports
+
+Every audit generates:
+- public URLs
+- OG metadata
+- social sharing previews
+
+### Audit Dashboard
+
+Authenticated users can:
+- view historical audits
+- reopen reports
+- manage optimization history
+
+### Lead Capture Workflow
+
+Audit reports support:
+- email sharing
+- lead capture
+- team collaboration workflows
+
+## Architecture Overview
+
+Spendora is built as a full-stack App Router application using:
+- Next.js 16
+- TypeScript
+- Supabase
+- OpenRouter
+- TailwindCSS
+- Jest
+- Zod runtime validation
+
+The architecture emphasizes:
+- deterministic business logic
+- thin API orchestration
+- centralized pricing systems
+- typed persistence
+- authenticated ownership
+- production-safe validation
+
+For a deeper system walkthrough, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+
+## Request Lifecycle
+
+```text
+User submits audit
+→ request validation
+→ deterministic audit engine
+→ AI summary generation
+→ Supabase persistence
+→ shareable report rendering
+→ authenticated ownership (optional)
+
+
+---
+
+# TECH STACK
+
+```md id="rm10"
+## Tech Stack
+
+### Frontend
+- Next.js 16 App Router
+- React
+- TypeScript
+- TailwindCSS
+
+### Backend
+- Route Handlers
+- Supabase
+- Zod validation
+- Deterministic audit engine
+
+### AI
+- OpenRouter
+- AI-generated summaries
+- fallback summary pipeline
+
+### Testing
+- Jest
+- Runtime validation tests
+- API route tests
+- Audit engine tests
+
+
+---
+
+# LOCAL DEVELOPMENT
+
+```md id="rm12"
+## Local Development
+
+### Install Dependencies
 
 ```bash
-npm ci
-```
+npm install
 
-2. Copy environment variables:
 
-```bash
-cp .env.example .env.local
-```
-
-3. Fill in `.env.local` (see `.env.example` for required keys).
-
-4. Apply database migrations in order under `supabase/migrations/` (Supabase SQL editor or CLI):
-
-```bash
-# If using Supabase CLI linked to your project:
-supabase db push
-```
-
-The latest migration enables **Row Level Security** and adds `get_audit_public(uuid)` for shareable audit pages.
-
-5. Run the dev server:
+### Start Development Server
 
 ```bash
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000).
+### Run Quality Checks
 
-## Scripts
+```bash
+npm run lint
+npm run type-check
+npm test
+npm run build
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Development server |
-| `npm run build` | Production build |
-| `npm run lint` | ESLint |
-| `npm run type-check` | TypeScript |
-| `npm test` | Jest unit tests |
 
-## Security model
+---
 
-- **Public audit reports** — fetched by UUID via `get_audit_public` RPC (no full-table read for anon clients).
-- **Dashboard** — authenticated users read audits they own or that match their email on a prior lead capture (RLS).
-- **Audit linking** — authenticated users can set `user_id` on audits that are still unclaimed.
-- **Writes from API routes** — validated audit/lead payloads are inserted with the service role after rate limiting.
+# ENVIRONMENT VARIABLES
 
-## Project docs
+CRITICAL.
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md) — data flow and scaling notes
-- [PRICING_DATA.md](./PRICING_DATA.md) — pricing sources for the audit engine
-- [TESTS.md](./TESTS.md) — how to run tests
-- [DEVLOG.md](./DEVLOG.md) — build log
-- [GTM.md](./GTM.md) — go-to-market plan
-- [ECONOMICS.md](./ECONOMICS.md) — unit economics
-- [REFLECTION.md](./REFLECTION.md) — project reflection
+```md id="rm13"
+## Environment Variables
 
-## Deploy
+Create a `.env.local` file:
 
-Deploy to Vercel (or any Node host). Set the same environment variables as `.env.example`. Ensure all Supabase migrations have been applied to production.
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+
+OPENROUTER_API_KEY=
+
+RESEND_API_KEY=
+FROM_EMAIL=
+
+
+---
+
+# PRODUCT DECISIONS
+
+VERY HIGH VALUE SECTION.
+
+```md id="rm14"
+## Product Decisions
+
+### Anonymous-First Onboarding
+
+Users can run audits before authentication to reduce onboarding friction and improve conversion.
+
+### Deterministic Audits Over Fully AI-Generated Analysis
+
+Spendora prioritizes deterministic pricing logic for:
+- consistency
+- operational trust
+- lower inference costs
+- predictable outputs
+
+AI is used only for executive summaries and enrichment.
+
+### Centralized Pricing Architecture
+
+All pricing logic is centralized in `pricing.ts` to avoid fragmented business rules and simplify maintenance.
+
+### Thin Route Handlers
+
+API routes are intentionally minimal and delegate business logic to isolated library modules.
+
+## Stability & Verification
+
+The project currently includes:
+- 58 passing tests
+- full TypeScript validation
+- ESLint validation
+- successful production builds
+- authenticated persistence flows
+- SSR-compatible App Router architecture
+
+Verified flows:
+- audit generation
+- AI summary generation
+- lead capture
+- authenticated dashboards
+- audit sharing
+- audit ownership linking
+
+## Future Improvements
+
+Potential future improvements include:
+- smarter recommendation reasoning
+- recurring audits
+- CSV exports
+- analytics dashboards
+- team workspaces
+- richer overlap detection
+- recommendation confidence tuning
+
+## Reflection
+
+The most difficult parts of the project were not UI implementation, but:
+- authenticated ownership flows
+- SSR-safe auth handling
+- deterministic audit modeling
+- runtime validation
+- anonymous-to-authenticated state continuity
+
+One major product insight from building Spendora was that recommendation trust and operational clarity matter significantly more than AI-generated complexity.
+
+## License
+
+MIT
