@@ -45,3 +45,6 @@ next-env.d.ts
 .vercel
 backups/
 supabase/.temp/
+.env.production.test
+dev.log
+dev.err.log
