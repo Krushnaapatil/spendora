@@ -37,12 +37,15 @@ This architecture ensures Spendora still functions during:
 
 # System Prompt
 
+```text
 You are a concise SaaS finance optimization assistant.
+```
 
 ---
 
 # User Prompt Template
 
+```text
 You are an AI finance operations assistant.
 
 Your task:
@@ -68,6 +71,7 @@ Recommendations:
 ${recommendations}
 
 Return ONLY the summary paragraph.
+```
 
 ---
 
@@ -167,3 +171,35 @@ Therefore:
 - financial calculations remain deterministic
 - AI summaries are replaceable
 - graceful degradation is mandatory
+
+# Why Prompt Constraints Matter
+
+Without strict constraints, summaries frequently became:
+- overly verbose
+- repetitive
+- marketing-heavy
+- operationally vague
+
+Constraining:
+- word count
+- tone
+- formatting
+- hallucination behavior
+
+significantly improved consistency and frontend rendering reliability.
+
+This became especially important because the summaries appear inside executive-style audit reports rather than chat interfaces.
+
+# Biggest Prompt Engineering Lesson
+
+The most important realization during development was that prompt quality mattered less than system boundaries.
+
+Reliable outputs came primarily from:
+- deterministic calculations
+- strict input structure
+- controlled AI scope
+- fallback handling
+
+rather than increasingly complex prompts.
+
+The AI performed best when its responsibility was intentionally narrow.
