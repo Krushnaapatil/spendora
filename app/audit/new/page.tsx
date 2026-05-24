@@ -1,4 +1,4 @@
-import AuditForm from "@/components/form/AuditForm";
+import AuditFormView from "@/components/form/AuditFormView";
 
 export default function NewAuditPage() {
   return (
@@ -25,7 +25,7 @@ export default function NewAuditPage() {
         {/* Form */}
 
         <div className="mt-16">
-          <AuditForm />
+          <AuditFormView />
         </div>
       </div>
     </main>
