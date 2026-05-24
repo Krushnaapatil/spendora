@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
@@ -77,9 +78,14 @@ export default function Navbar({
           href="/"
           className="flex items-center gap-3 rounded-full border border-zinc-200 bg-white/80 px-4 py-2 shadow-sm backdrop-blur"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-950 text-sm font-bold text-white">
-            S
-          </span>
+          <Image
+            src="/logo.png"
+            alt="Spendora"
+            width={40}
+            height={40}
+            className="h-10 w-10 object-contain"
+            priority
+          />
           <span className="text-sm font-semibold tracking-tight text-zinc-950">
             Spendora
           </span>
