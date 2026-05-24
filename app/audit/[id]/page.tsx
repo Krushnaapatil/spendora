@@ -28,6 +28,7 @@ import {
 
 import ShareAuditCard from "@/components/audit/ShareAuditCard";
 import SiteNavbar from "@/components/layout/SiteNavbar";
+import ConsolidationSummary from "@/components/audit/ConsolidationSummary";
 
 // ─── Route Params ─────────────────────────────────────────────────────────
 
@@ -156,6 +157,12 @@ function actionLabel(
 
     case "switch":
       return "Consolidate Tooling";
+
+    case "consolidate":
+      return "Consolidate Tooling";
+
+    case "rightsizing":
+      return "Rightsize Subscriptions";
 
     case "credits":
       return "Reduce Retail Spend";
@@ -335,6 +342,10 @@ export default async function AuditPage(
           </div>
 
           <div className="space-y-5">
+            {/* Consolidation summary */}
+            {/* @ts-ignore */}
+            <ConsolidationSummary tools={publicAudit.tools} />
+
             {publicAudit.tools.map(
               (
                 tool: ToolAuditResult

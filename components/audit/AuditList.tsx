@@ -120,6 +120,33 @@ export default function AuditList() {
     };
   }, [supabase]);
 
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<"newest" | "oldest">("newest");
+
+  const displayedAudits = useMemo(() => {
+    if (!audits) return [];
+
+    let list = audits.slice();
+
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      list = list.filter((a) => {
+        return (
+          (a.summary || "").toLowerCase().includes(q) ||
+          (a.summary_source || "").toLowerCase().includes(q)
+        );
+      });
+    }
+
+    list.sort((a, b) => {
+      const ta = new Date(a.created_at || 0).getTime();
+      const tb = new Date(b.created_at || 0).getTime();
+      return sort === "newest" ? tb - ta : ta - tb;
+    });
+
+    return list;
+  }, [audits, query, sort]);
+
   if (loading) {
     return (
       <div className="mt-16 rounded-[32px] border border-zinc-200 bg-white p-16 text-center">
@@ -183,12 +210,27 @@ export default function AuditList() {
 
   return (
     <div className="mt-16 grid gap-6">
-      {audits.map((audit) => (
-        <Link
-          key={audit.id}
-          href={`/audit/${audit.id}`}
-          className="group rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
-        >
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex-1">
+          <input
+            placeholder="Search audits or summary..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm outline-none"
+          />
+        </div>
+
+        <div className="flex items-center gap-3">
+          <label className="text-sm text-zinc-600">Sort</label>
+          <select value={sort} onChange={(e) => setSort(e.target.value as any)} className="rounded-xl border px-3 py-2 text-sm">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </div>
+      </div>
+
+      {displayedAudits.map((audit) => (
+        <div key={audit.id} className="group rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <div className="flex flex-wrap items-center gap-3">
@@ -216,12 +258,18 @@ export default function AuditList() {
 
             <div className="flex flex-col items-start gap-3 lg:items-end">
               <div className="text-sm text-zinc-500">Created {formatDate(audit.created_at)}</div>
-              <div className="rounded-2xl border border-zinc-200 px-5 py-3 font-semibold text-zinc-700 transition group-hover:bg-zinc-950 group-hover:text-white">
-                Open Audit
+              <div className="flex gap-2">
+                <Link href={`/audit/${audit.id}/edit`} className="rounded-2xl border border-zinc-200 px-5 py-3 font-semibold text-zinc-700 hover:bg-zinc-100">
+                  Edit & Rerun
+                </Link>
+
+                <Link href={`/audit/${audit.id}`} className="rounded-2xl border border-zinc-200 px-5 py-3 font-semibold text-zinc-700 transition group-hover:bg-zinc-950 group-hover:text-white">
+                  Open Audit
+                </Link>
               </div>
             </div>
           </div>
-        </Link>
+        </div>
       ))}
     </div>
   );

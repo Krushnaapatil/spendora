@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
+import { createClient } from "@/lib/supabase-browser";
 import {
   NAV_LINKS,
 } from "@/data/landing";
@@ -19,6 +22,47 @@ export default function Navbar({
   mobileMenuOpen,
   setMobileMenuOpen,
 }: NavbarProps) {
+  const router = useRouter();
+
+  const supabase = useMemo(() => createClient(), []);
+
+  const [user, setUser] = useState<any | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function init() {
+      try {
+        const { data } = await supabase.auth.getUser();
+        if (!mounted) return;
+        setUser(data.user ?? null);
+      } catch (err) {
+        if (!mounted) return;
+        setUser(null);
+      }
+    }
+
+    init();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!mounted) return;
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => {
+      mounted = false;
+      authListener?.subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  }
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
@@ -77,6 +121,40 @@ export default function Navbar({
           >
             Run Free Audit
           </Link>
+
+          {user ? (
+            <>
+              <Link
+                href="/audits"
+                className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+              >
+                Dashboard
+              </Link>
+
+              <button
+                onClick={handleSignOut}
+                className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login?mode=login&next=/audits"
+                className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+              >
+                Login
+              </Link>
+
+              <Link
+                href="/login?mode=signup&next=/audits"
+                className="rounded-xl bg-zinc-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -125,6 +203,40 @@ export default function Navbar({
             >
               Run Free Audit
             </Link>
+
+            {user ? (
+              <div className="mt-2 flex gap-2">
+                <Link
+                  href="/audits"
+                  className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700"
+                >
+                  Dashboard
+                </Link>
+
+                <button
+                  onClick={handleSignOut}
+                  className="rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="mt-2 flex gap-2">
+                <Link
+                  href="/login?mode=login&next=/audits"
+                  className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href="/login?mode=signup&next=/audits"
+                  className="rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       ) : null}

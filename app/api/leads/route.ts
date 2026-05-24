@@ -144,6 +144,9 @@ export async function POST(
     Database["public"]["Tables"]["leads"]["Insert"],
     "id" | "created_at"
   > = {
+    audit_id:
+      input.auditId,
+
     email:
       input.email,
 

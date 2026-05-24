@@ -84,7 +84,9 @@ export type RecommendationAction =
   | "downgrade"
   | "switch"
   | "credits"
-  | "optimal";
+  | "optimal"
+  | "consolidate"
+  | "rightsizing";
 
 export type RecommendationConfidence =
   | "high"

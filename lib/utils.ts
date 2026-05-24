@@ -280,6 +280,57 @@ export function sleep(
 }
 
 /**
+ * Attempt to POST /api/audit/link with retries and exponential backoff.
+ * Returns true if the link succeeded (response.ok), false otherwise.
+ */
+export async function linkAuditWithRetry(
+  auditId: string,
+  accessToken: string,
+  options: {
+    retries?: number;
+    initialDelayMs?: number;
+  } = {}
+): Promise<boolean> {
+  const { retries = 5, initialDelayMs = 250 } = options;
+
+  let attempt = 0;
+
+  while (attempt < retries) {
+    try {
+      const res = await fetch("/api/audit/link", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ auditId }),
+      });
+
+      if (res.ok) return true;
+
+      // Non-retriable errors: 400, 401, 403, 404 (client issues)
+      if ([400, 401, 403, 404].includes(res.status)) {
+        return false;
+      }
+
+      // For 429 or 5xx, fallthrough to retry
+    } catch (err) {
+      // network error — will retry
+    }
+
+    attempt += 1;
+
+    const delay = Math.round(
+      initialDelayMs * Math.pow(2, attempt - 1)
+    );
+
+    await sleep(delay);
+  }
+
+  return false;
+}
+
+/**
  * Generate readable short IDs
  * for UI display only.
  *
