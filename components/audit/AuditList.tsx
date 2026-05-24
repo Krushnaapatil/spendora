@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { createClient } from "@/lib/supabase-browser";
 import { useSession } from "@/components/session/SessionProvider";
+import type { Json } from "@/lib/database.types";
 
 type Audit = {
   id: string;
@@ -13,7 +14,11 @@ type Audit = {
   summary_source: string | null;
   total_monthly_savings: number | null;
   total_annual_savings: number | null;
-  tools: unknown[] | null;
+  tools: Json | null;
+};
+
+type AuditListProps = {
+  initialAudits?: Audit[];
 };
 
 function formatCurrency(amount: number) {
@@ -84,12 +89,18 @@ async function getAuditsByIds(
   return (data as Audit[]) ?? [];
 }
 
-export default function AuditList() {
+export default function AuditList({
+  initialAudits = [],
+}: AuditListProps) {
   const supabase = useMemo(() => createClient(), []);
   const { session } = useSession();
 
-  const [audits, setAudits] = useState<Audit[] | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [audits, setAudits] = useState<Audit[]>(
+    initialAudits
+  );
+  const [loading, setLoading] = useState(
+    initialAudits.length === 0
+  );
   const [error, setError] = useState<string | null>(null);
   const [userMissing, setUserMissing] = useState(false);
   const [query, setQuery] = useState("");
@@ -110,8 +121,11 @@ export default function AuditList() {
     async function loadAudits() {
       if (!session?.user) {
         if (!mounted) return;
-        setUserMissing(true);
-        setAudits([]);
+
+        if (initialAudits.length === 0) {
+          setUserMissing(true);
+        }
+
         setLoading(false);
         return;
       }
@@ -154,6 +168,7 @@ export default function AuditList() {
         const merged = Array.from(
           new Map(
             [
+              ...initialAudits,
               ...((directAuditsResult.data as Audit[]) ?? []),
               ...linkedAudits,
             ].map((audit) => [audit.id, audit])
@@ -180,11 +195,9 @@ export default function AuditList() {
     return () => {
       mounted = false;
     };
-  }, [hydrated, session, supabase]);
+  }, [hydrated, initialAudits, session, supabase]);
 
   const displayedAudits = useMemo(() => {
-    if (!audits) return [];
-
     let list = audits.slice();
 
     if (query.trim()) {
@@ -253,7 +266,7 @@ export default function AuditList() {
     );
   }
 
-  if (!audits || audits.length === 0) {
+  if (audits.length === 0) {
     return (
       <div className="mt-16 rounded-[32px] border border-dashed border-zinc-300 bg-white p-16 text-center">
         <h2 className="text-3xl font-bold text-zinc-950">No audits yet</h2>

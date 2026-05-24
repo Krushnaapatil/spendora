@@ -1,8 +1,23 @@
 import Link from "next/link";
 
+import { createClient } from "@/lib/supabase-server";
+import { loadAuditsForUser } from "@/lib/auditOwnership";
 import AuditList from "@/components/audit/AuditList";
+import type { AuditRow } from "@/lib/auditOwnership";
 
-export default function AuditsPage() {
+export default async function AuditsPage() {
+  const supabase = await createClient();
+  const sessionResult = await supabase.auth.getSession();
+  const session = sessionResult.data.session;
+  let initialAudits: AuditRow[] = [];
+
+  if (session?.user.email) {
+    initialAudits = await loadAuditsForUser(
+      session.user.id,
+      session.user.email
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#FAFAF8] px-6 py-16">
       <div className="mx-auto max-w-6xl">
@@ -29,7 +44,7 @@ export default function AuditsPage() {
           </Link>
         </div>
 
-        <AuditList />
+        <AuditList initialAudits={initialAudits} />
       </div>
     </main>
   );
