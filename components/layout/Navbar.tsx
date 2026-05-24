@@ -68,23 +68,24 @@ export default function Navbar({
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         hasScrolled
-          ? "border-b border-zinc-200 bg-white/80 backdrop-blur-xl"
+          ? "border-b border-zinc-200/80 bg-white/80 shadow-[0_8px_40px_rgba(0,0,0,0.05)] backdrop-blur-xl"
           : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Logo */}
-
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-zinc-950"
+          className="flex items-center gap-3 rounded-full border border-zinc-200 bg-white/80 px-4 py-2 shadow-sm backdrop-blur"
         >
-          Spendora
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-950 text-sm font-bold text-white">
+            S
+          </span>
+          <span className="text-sm font-semibold tracking-tight text-zinc-950">
+            Spendora
+          </span>
         </Link>
 
-        {/* Desktop Nav */}
-
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-2 rounded-full border border-zinc-200 bg-white/75 px-2 py-2 shadow-sm backdrop-blur md:flex">
           {NAV_LINKS.map(
             (link) => (
               <a
@@ -94,7 +95,7 @@ export default function Navbar({
                 href={
                   link.href
                 }
-                className="text-sm font-medium text-zinc-600 transition hover:text-zinc-950"
+                className="rounded-full px-4 py-2 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-950"
               >
                 {
                   link.label
@@ -104,21 +105,19 @@ export default function Navbar({
           )}
         </nav>
 
-        {/* Desktop CTA */}
-
         <div className="hidden items-center gap-3 md:flex">
           <a
             href="https://github.com/Krushnaapatil/spendora"
             target="_blank"
             rel="noreferrer"
-            className="rounded-xl border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+            className="rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-100"
           >
             GitHub
           </a>
 
           <Link
             href="/audit/new"
-            className="rounded-xl bg-zinc-950 px-5 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
+            className="rounded-full bg-zinc-950 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-zinc-800"
           >
             Run Free Audit
           </Link>
@@ -127,14 +126,14 @@ export default function Navbar({
             <>
               <Link
                 href="/audits"
-                className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+                className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
               >
                 Dashboard
               </Link>
 
               <button
                 onClick={handleSignOut}
-                className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+                className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
               >
                 Logout
               </button>
@@ -143,14 +142,14 @@ export default function Navbar({
             <>
               <Link
                 href="/login?mode=login&next=/audits"
-                className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
+                className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
               >
                 Login
               </Link>
 
               <Link
                 href="/login?mode=signup&next=/audits"
-                className="rounded-xl bg-zinc-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                className="rounded-full bg-zinc-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
               >
                 Sign Up
               </Link>
@@ -166,7 +165,7 @@ export default function Navbar({
               !mobileMenuOpen
             )
           }
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 md:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white/80 shadow-sm backdrop-blur md:hidden"
         >
           <div className="space-y-1">
             <div className="h-[2px] w-5 bg-zinc-900" />
@@ -178,7 +177,7 @@ export default function Navbar({
       {/* Mobile Menu */}
 
       {mobileMenuOpen ? (
-        <div className="border-t border-zinc-200 bg-white md:hidden">
+        <div className="border-t border-zinc-200 bg-white/95 shadow-2xl backdrop-blur md:hidden">
           <div className="flex flex-col gap-5 px-6 py-6">
             {NAV_LINKS.map(
               (link) => (
@@ -189,7 +188,7 @@ export default function Navbar({
                   href={
                     link.href
                   }
-                  className="text-sm font-medium text-zinc-700"
+                  className="rounded-2xl bg-zinc-50 px-4 py-3 text-sm font-medium text-zinc-700"
                 >
                   {
                     link.label
@@ -200,7 +199,7 @@ export default function Navbar({
 
             <Link
               href="/audit/new"
-              className="mt-2 rounded-xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white"
+              className="mt-2 rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white"
             >
               Run Free Audit
             </Link>
@@ -209,14 +208,14 @@ export default function Navbar({
               <div className="mt-2 flex gap-2">
                 <Link
                   href="/audits"
-                  className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700"
+                  className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700"
                 >
                   Dashboard
                 </Link>
 
                 <button
                   onClick={handleSignOut}
-                  className="rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white"
+                  className="rounded-2xl bg-red-600 px-4 py-3 text-sm font-semibold text-white"
                 >
                   Logout
                 </button>
@@ -225,14 +224,14 @@ export default function Navbar({
               <div className="mt-2 flex gap-2">
                 <Link
                   href="/login?mode=login&next=/audits"
-                  className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700"
+                  className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700"
                 >
                   Login
                 </Link>
 
                 <Link
                   href="/login?mode=signup&next=/audits"
-                  className="rounded-xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white"
+                  className="rounded-2xl bg-zinc-950 px-4 py-3 text-sm font-semibold text-white"
                 >
                   Sign Up
                 </Link>

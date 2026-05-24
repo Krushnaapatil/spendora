@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useState,
-  type FormEvent,
-} from "react";
+import { useState, type FormEvent } from "react";
 
 interface ShareAuditCardProps {
   auditId: string;
@@ -30,16 +27,12 @@ export default function ShareAuditCard({
   const [role, setRole] = useState("");
   const [teamSize, setTeamSize] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [sendMessage, setSendMessage] = useState<
-    string | null
-  >(null);
+  const [sendMessage, setSendMessage] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState("");
 
   async function copyShareLink() {
     try {
-      await navigator.clipboard.writeText(
-        shareUrl
-      );
+      await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       window.setTimeout(() => {
         setCopied(false);
@@ -61,56 +54,42 @@ export default function ShareAuditCard({
     });
   }
 
-  async function sendLeadGate(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function sendLeadGate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSendMessage(null);
 
     if (!email.trim()) {
-      setSendMessage(
-        "Add an email address first."
-      );
+      setSendMessage("Add an email address first.");
       return;
     }
 
     setIsSending(true);
 
     try {
-      const response = await fetch(
-        "/api/leads",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            auditId,
-            email: email.trim(),
-            company: company.trim() || undefined,
-            role: role.trim() || undefined,
-            teamSize: teamSize
-              ? Number(teamSize)
-              : undefined,
-            source: "audit-report",
-            honeypot,
-          }),
-        }
-      );
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          auditId,
+          email: email.trim(),
+          company: company.trim() || undefined,
+          role: role.trim() || undefined,
+          teamSize: teamSize ? Number(teamSize) : undefined,
+          source: "audit-report",
+          honeypot,
+        }),
+      });
 
-      const data =
-        (await response.json().catch(() => null)) as
-          | {
-              error?: string;
-            }
-          | null;
+      const data = (await response.json().catch(() => null)) as
+        | {
+            error?: string;
+          }
+        | null;
 
       if (!response.ok) {
-        throw new Error(
-          data?.error ??
-            "Failed to save lead."
-        );
+        throw new Error(data?.error ?? "Failed to save lead.");
       }
 
       setSendMessage(
@@ -124,9 +103,7 @@ export default function ShareAuditCard({
       setTeamSize("");
     } catch (error) {
       setSendMessage(
-        error instanceof Error
-          ? error.message
-          : "Failed to save lead."
+        error instanceof Error ? error.message : "Failed to save lead."
       );
     } finally {
       setIsSending(false);
@@ -134,13 +111,13 @@ export default function ShareAuditCard({
   }
 
   return (
-    <div className="mt-8 rounded-2xl border border-zinc-200 bg-zinc-50 p-6 text-left">
-      <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+    <div className="mt-8 rounded-[28px] border border-zinc-200 bg-[linear-gradient(180deg,#fafaf8_0%,#ffffff_100%)] p-6 text-left shadow-sm">
+      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">
         Share this audit with your team
       </p>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-zinc-200 bg-white px-4 py-3">
+      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 shadow-sm">
           <div className="text-[11px] uppercase tracking-wide text-zinc-400">
             Monthly savings
           </div>
@@ -149,7 +126,7 @@ export default function ShareAuditCard({
           </div>
         </div>
 
-        <div className="rounded-xl border border-zinc-200 bg-white px-4 py-3">
+        <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 shadow-sm">
           <div className="text-[11px] uppercase tracking-wide text-zinc-400">
             Annual savings
           </div>
@@ -158,7 +135,7 @@ export default function ShareAuditCard({
           </div>
         </div>
 
-        <div className="rounded-xl border border-zinc-200 bg-white px-4 py-3">
+        <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 shadow-sm">
           <div className="text-[11px] uppercase tracking-wide text-zinc-400">
             Tools reviewed
           </div>
@@ -169,27 +146,25 @@ export default function ShareAuditCard({
       </div>
 
       {summary ? (
-        <div className="mt-4 rounded-2xl border border-zinc-200 bg-white p-4">
+        <div className="mt-4 rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
             Executive summary
           </p>
-          <p className="mt-2 text-sm leading-7 text-zinc-700">
-            {summary}
-          </p>
+          <p className="mt-2 text-sm leading-7 text-zinc-700">{summary}</p>
         </div>
       ) : null}
 
-      <div className="mt-4 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700">
+      <div className="mt-4 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-700 shadow-sm">
         {shareUrl}
       </div>
 
       {highSavings ? (
-        <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+        <div className="mt-4 rounded-3xl border border-amber-200 bg-amber-50 p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
             Spendora CTA
           </p>
           <p className="mt-2 text-sm leading-7 text-amber-900">
-            This audit crosses the savings threshold. Capture the report by email and we’ll follow up about a Credex consultation.
+            This audit crosses the savings threshold. Capture the report by email and we&apos;ll follow up about a Credex consultation.
           </p>
         </div>
       ) : null}
@@ -198,7 +173,7 @@ export default function ShareAuditCard({
         <button
           type="button"
           onClick={copyShareLink}
-          className="rounded-xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800"
+          className="rounded-2xl bg-zinc-950 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-zinc-800"
         >
           {copied ? "Copied" : "Copy Link"}
         </button>
@@ -206,7 +181,7 @@ export default function ShareAuditCard({
         <button
           type="button"
           onClick={nativeShare}
-          className="rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
+          className="rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-100"
         >
           Share via Device
         </button>
@@ -215,7 +190,7 @@ export default function ShareAuditCard({
       <form
         id="lead-gate"
         onSubmit={sendLeadGate}
-        className="mt-5 rounded-2xl border border-zinc-200 bg-white p-4"
+        className="mt-5 rounded-[28px] border border-zinc-200 bg-white p-5 shadow-sm"
       >
         <label
           htmlFor="share-email"
@@ -247,7 +222,7 @@ export default function ShareAuditCard({
                 setSendMessage(null);
               }}
               placeholder="teammate@company.com"
-              className="min-w-0 rounded-xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
+              className="min-w-0 rounded-2xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
             />
 
             <input
@@ -258,7 +233,7 @@ export default function ShareAuditCard({
                 setSendMessage(null);
               }}
               placeholder="Company name (optional)"
-              className="min-w-0 rounded-xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
+              className="min-w-0 rounded-2xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
             />
           </div>
 
@@ -271,7 +246,7 @@ export default function ShareAuditCard({
                 setSendMessage(null);
               }}
               placeholder="Role (optional)"
-              className="min-w-0 rounded-xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
+              className="min-w-0 rounded-2xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
             />
 
             <input
@@ -283,21 +258,21 @@ export default function ShareAuditCard({
                 setSendMessage(null);
               }}
               placeholder="Team size (optional)"
-              className="min-w-0 rounded-xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
+              className="min-w-0 rounded-2xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
             />
           </div>
 
           <button
             type="submit"
             disabled={isSending}
-            className="rounded-xl bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSending ? "Saving..." : "Email Me This Report"}
           </button>
         </div>
 
         <p className="mt-3 text-sm text-zinc-500">
-          We’ll email a full report with the audit link and summary.
+          We&apos;ll email a full report with the audit link and summary.
         </p>
 
         {sendMessage ? (

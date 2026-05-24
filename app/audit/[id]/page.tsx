@@ -198,13 +198,13 @@ export default async function AuditPage(
   ).toString();
 
   return (
-    <main className="min-h-screen bg-zinc-50">
+    <main className="min-h-screen bg-[linear-gradient(180deg,#fafaf8_0%,#ffffff_100%)]">
       <SiteNavbar />
 
       <div className="mx-auto max-w-6xl px-6 py-12 pt-24">
         {/* ─── Hero ───────────────────────────────────── */}
 
-        <section className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm lg:p-12">
+        <section className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-[0_18px_60px_rgba(0,0,0,0.06)] lg:p-12">
           <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500">
@@ -227,7 +227,7 @@ export default async function AuditPage(
                 and optimization opportunities.
               </p>
 
-              <div className="mt-8 rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
+              <div className="mt-8 rounded-2xl border border-zinc-200 bg-[linear-gradient(180deg,#fafaf8_0%,#ffffff_100%)] p-6">
                 <p className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
                   Executive Summary
                 </p>
@@ -321,7 +321,7 @@ export default async function AuditPage(
                   key={
                     tool.toolId
                   }
-                  className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
+                  className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
                 >
                   <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                     <div className="flex-1">
