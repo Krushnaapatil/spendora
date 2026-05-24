@@ -498,16 +498,24 @@ export default function AuditForm() {
         <h2 className="text-3xl font-bold tracking-tight text-zinc-950">
           Team Information
         </h2>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">
+          Tell us how many people are on the team, what the primary work is, and which
+          AI subscriptions you are paying for.
+        </p>
 
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           {/* Team Size */}
 
           <div>
-            <label className="text-sm font-medium text-zinc-700">
+            <label htmlFor="team-size" className="text-sm font-medium text-zinc-700">
               Team Size
             </label>
+            <p className="mt-1 text-xs text-zinc-500">
+              Total people using AI tools across the team.
+            </p>
 
             <input
+              id="team-size"
               type="number"
               min={1}
               value={
@@ -537,11 +545,15 @@ export default function AuditForm() {
           {/* Use Case */}
 
           <div>
-            <label className="text-sm font-medium text-zinc-700">
+            <label htmlFor="primary-use-case" className="text-sm font-medium text-zinc-700">
               Primary Use Case
             </label>
+            <p className="mt-1 text-xs text-zinc-500">
+              Choose the main way your team uses these tools.
+            </p>
 
             <select
+              id="primary-use-case"
               value={
                 useCase
               }
@@ -590,9 +602,14 @@ export default function AuditForm() {
 
       <div className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm">
         <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-950">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-zinc-950">
             AI Subscriptions
-          </h2>
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">
+              For each tool, choose the vendor, subscription plan, monthly spend, and number of seats.
+            </p>
+          </div>
 
           <button
             type="button"
@@ -638,11 +655,18 @@ export default function AuditForm() {
                   {/* Tool */}
 
                   <div>
-                    <label className="text-sm font-medium text-zinc-700">
+                    <label
+                      htmlFor={`tool-${index}-name`}
+                      className="text-sm font-medium text-zinc-700"
+                    >
                       Tool
                     </label>
+                    <p className="mt-1 text-xs text-zinc-500">
+                      Which AI product are you paying for?
+                    </p>
 
                     <select
+                      id={`tool-${index}-name`}
                       value={
                         tool.tool
                       }
@@ -684,11 +708,18 @@ export default function AuditForm() {
                   {/* Plan */}
 
                   <div>
-                    <label className="text-sm font-medium text-zinc-700">
+                    <label
+                      htmlFor={`tool-${index}-plan`}
+                      className="text-sm font-medium text-zinc-700"
+                    >
                       Plan
                     </label>
+                    <p className="mt-1 text-xs text-zinc-500">
+                      Select the subscription tier or API plan.
+                    </p>
 
                     <select
+                      id={`tool-${index}-plan`}
                       value={
                         tool.plan
                       }
@@ -737,11 +768,18 @@ export default function AuditForm() {
                   {/* Spend */}
 
                   <div>
-                    <label className="text-sm font-medium text-zinc-700">
+                    <label
+                      htmlFor={`tool-${index}-spend`}
+                      className="text-sm font-medium text-zinc-700"
+                    >
                       Monthly Spend
                     </label>
+                    <p className="mt-1 text-xs text-zinc-500">
+                      Approximate monthly cost for this tool.
+                    </p>
 
                     <input
+                      id={`tool-${index}-spend`}
                       type="number"
                       min={0}
                       value={
@@ -768,11 +806,18 @@ export default function AuditForm() {
                   {/* Seats */}
 
                   <div>
-                    <label className="text-sm font-medium text-zinc-700">
+                    <label
+                      htmlFor={`tool-${index}-seats`}
+                      className="text-sm font-medium text-zinc-700"
+                    >
                       Seats
                     </label>
+                    <p className="mt-1 text-xs text-zinc-500">
+                      How many people are actively using it?
+                    </p>
 
                     <input
+                      id={`tool-${index}-seats`}
                       type="number"
                       min={1}
                       value={

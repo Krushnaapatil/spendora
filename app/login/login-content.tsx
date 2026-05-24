@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import { linkAuditWithRetry } from "@/lib/utils";
@@ -34,7 +34,29 @@ export default function LoginContent({
   const [linkError, setLinkError] = useState<string | null>(null);
   const [linking, setLinking] = useState(false);
 
-  async function handleAuth() {
+  async function waitForSession(
+    maxAttempts = 10,
+    delayMs = 150
+  ) {
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+      const sessionResult = await supabase.auth.getSession();
+      const session = sessionResult.data.session;
+
+      if (session) {
+        return session;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+
+    return null;
+  }
+
+  async function handleAuth(
+    event?: FormEvent<HTMLFormElement>
+  ) {
+    event?.preventDefault();
+
     try {
       setLoading(true);
       setError("");
@@ -44,11 +66,10 @@ export default function LoginContent({
       if (password.length < 6) throw new Error("Password must contain at least 6 characters.");
 
       if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
 
-        const sessionResult = await supabase.auth.getSession();
-        const session = sessionResult.data.session;
+        const session = data.session ?? (await waitForSession());
         if (!session) throw new Error("Login succeeded but auth session could not be established. Please refresh and try again.");
 
         if (auditId) {
@@ -73,13 +94,15 @@ export default function LoginContent({
         }
 
         setSuccess("Successfully signed in. Redirecting...");
-        setTimeout(() => { router.push(redirectTo); router.refresh(); }, 1200);
+        setTimeout(() => {
+          router.push(redirectTo);
+          router.refresh();
+        }, 1200);
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
 
-        const sessionResult = await supabase.auth.getSession();
-        const session = sessionResult.data.session;
+        const session = data.session ?? (await waitForSession(8, 200));
 
         if (!session) {
           setSuccess("Account created. Please confirm your email before signing in.");
@@ -107,7 +130,10 @@ export default function LoginContent({
         }
 
         setSuccess("Account created successfully. Redirecting...");
-        setTimeout(() => { router.push(redirectTo); router.refresh(); }, 1200);
+        setTimeout(() => {
+          router.push(redirectTo);
+          router.refresh();
+        }, 1200);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
@@ -172,6 +198,7 @@ export default function LoginContent({
           {/* Tab toggle */}
           <div className="flex bg-zinc-100 rounded-xl p-1 mb-6">
             <button
+              type="button"
               onClick={() => { setMode("login"); setError(""); setSuccess(""); }}
               className={`flex-1 text-sm font-medium py-2 rounded-lg transition-all ${
                 mode === "login" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500"
@@ -180,6 +207,7 @@ export default function LoginContent({
               Sign in
             </button>
             <button
+              type="button"
               onClick={() => { setMode("signup"); setError(""); setSuccess(""); }}
               className={`flex-1 text-sm font-medium py-2 rounded-lg transition-all ${
                 mode === "signup" ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500"
@@ -190,7 +218,7 @@ export default function LoginContent({
           </div>
 
           {/* Fields */}
-          <div className="space-y-3">
+          <form className="space-y-3" onSubmit={handleAuth}>
             <div>
               <label className="block text-sm font-medium text-zinc-700 mb-1.5">
                 Email
@@ -199,7 +227,6 @@ export default function LoginContent({
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAuth()}
                 placeholder="you@company.com"
                 autoComplete="email"
                 className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-zinc-400 focus:bg-white focus:ring-2 focus:ring-zinc-900/5"
@@ -214,7 +241,6 @@ export default function LoginContent({
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleAuth()}
                 placeholder="Minimum 6 characters"
                 autoComplete={mode === "login" ? "current-password" : "new-password"}
                 className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-zinc-400 focus:bg-white focus:ring-2 focus:ring-zinc-900/5"
@@ -253,7 +279,7 @@ export default function LoginContent({
 
             {/* Submit */}
             <button
-              onClick={handleAuth}
+              type="submit"
               disabled={loading}
               className="w-full rounded-xl bg-zinc-900 text-white text-sm font-semibold py-3 mt-1 flex items-center justify-center gap-2 transition hover:bg-zinc-700 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -264,7 +290,7 @@ export default function LoginContent({
                 </>
               ) : mode === "login" ? "Sign in" : "Create account"}
             </button>
-          </div>
+          </form>
         </div>
 
         {/* Footer */}
