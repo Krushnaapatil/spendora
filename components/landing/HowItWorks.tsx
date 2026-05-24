@@ -6,11 +6,11 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative overflow-hidden border-b border-zinc-200 bg-[#FAFAF8]"
+      className="relative overflow-hidden border-b border-white/50 bg-white/25 backdrop-blur-xl"
     >
       {/* Background Glow */}
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,0,0,0.03),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,0,0,0.05),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.06),transparent_38%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 py-28">
         {/* Header */}
@@ -43,7 +43,7 @@ export default function HowItWorks() {
               (step, index) => (
                 <div
                   key={step.step}
-                  className="group relative grid gap-8 rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl lg:grid-cols-[120px_1fr]"
+                  className="group relative grid gap-8 rounded-[32px] border border-white/70 bg-white/60 p-8 shadow-[0_16px_50px_rgba(15,23,42,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-200 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)] lg:grid-cols-[120px_1fr]"
                 >
                   {/* Step Number */}
 

@@ -7,9 +7,9 @@ import {
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-zinc-200 bg-[linear-gradient(180deg,#ffffff_0%,#f7f7f3_100%)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.09),transparent_30%),radial-gradient(circle_at_top_right,rgba(0,0,0,0.04),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.03),transparent_28%)]" />
-      <div className="absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald-200/20 blur-3xl" />
+    <section className="relative overflow-hidden border-b border-white/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.58)_0%,rgba(247,247,243,0.38)_100%)] backdrop-blur-2xl">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.12),transparent_28%),radial-gradient(circle_at_top_right,rgba(0,0,0,0.05),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.04),transparent_28%)]" />
+      <div className="absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald-200/24 blur-3xl" />
 
       <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-24 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-36">
         <div className="max-w-3xl">
@@ -45,7 +45,7 @@ export default function Hero() {
           </div>
 
           <div className="mt-10 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-3xl border border-zinc-200 bg-white/90 p-4 shadow-sm">
+            <div className="rounded-3xl border border-white/70 bg-white/55 p-4 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-md">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
                 Deterministic
               </p>
@@ -54,7 +54,7 @@ export default function Hero() {
               </p>
             </div>
 
-            <div className="rounded-3xl border border-zinc-200 bg-white/90 p-4 shadow-sm">
+            <div className="rounded-3xl border border-white/70 bg-white/55 p-4 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-md">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
                 Shareable
               </p>
@@ -63,7 +63,7 @@ export default function Hero() {
               </p>
             </div>
 
-            <div className="rounded-3xl border border-zinc-200 bg-white/90 p-4 shadow-sm">
+            <div className="rounded-3xl border border-white/70 bg-white/55 p-4 shadow-[0_14px_40px_rgba(15,23,42,0.06)] backdrop-blur-md">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
                 AI summary
               </p>
@@ -77,7 +77,7 @@ export default function Hero() {
             {SUPPORTED_TOOLS.map((tool) => (
               <span
                 key={tool}
-                className="rounded-full border border-zinc-200 bg-white/90 px-4 py-2 shadow-sm backdrop-blur"
+                className="rounded-full border border-white/70 bg-white/55 px-4 py-2 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur-md"
               >
                 {tool}
               </span>
@@ -86,7 +86,7 @@ export default function Hero() {
         </div>
 
         <div>
-          <div className="rounded-[36px] border border-zinc-200 bg-white/90 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.1)] backdrop-blur">
+          <div className="rounded-[36px] border border-white/70 bg-white/60 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.08)] backdrop-blur-2xl">
             <div className="flex items-center justify-between gap-4 border-b border-zinc-100 pb-5">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
@@ -103,7 +103,7 @@ export default function Hero() {
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              <div className="rounded-3xl border border-zinc-200 bg-zinc-50 p-4">
+                <div className="rounded-3xl border border-white/60 bg-white/40 p-4 backdrop-blur-md">
                 <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
                   Monthly
                 </p>
@@ -112,7 +112,7 @@ export default function Hero() {
                 </p>
               </div>
 
-              <div className="rounded-3xl border border-zinc-200 bg-zinc-50 p-4">
+                <div className="rounded-3xl border border-white/60 bg-white/40 p-4 backdrop-blur-md">
                 <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
                   Annual
                 </p>
@@ -121,7 +121,7 @@ export default function Hero() {
                 </p>
               </div>
 
-              <div className="rounded-3xl border border-zinc-200 bg-zinc-50 p-4">
+                <div className="rounded-3xl border border-white/60 bg-white/40 p-4 backdrop-blur-md">
                 <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
                   Tools
                 </p>
@@ -135,7 +135,7 @@ export default function Hero() {
               {AUDIT_RECOMMENDATIONS.slice(0, 2).map((recommendation) => (
                 <div
                   key={recommendation.tool}
-                  className="rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm"
+                  className="rounded-3xl border border-white/70 bg-white/55 p-4 shadow-[0_14px_40px_rgba(15,23,42,0.05)] backdrop-blur-md"
                 >
                   <div className="flex items-start justify-between gap-6">
                     <div>
@@ -160,7 +160,7 @@ export default function Hero() {
               ))}
             </div>
 
-            <div className="mt-6 rounded-[28px] border border-zinc-200 bg-[linear-gradient(180deg,#fafaf8_0%,#ffffff_100%)] p-5">
+            <div className="mt-6 rounded-[28px] border border-white/70 bg-[linear-gradient(180deg,rgba(250,250,248,0.8)_0%,rgba(255,255,255,0.55)_100%)] p-5 backdrop-blur-md">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
                 Summary
               </p>

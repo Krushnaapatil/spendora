@@ -4,9 +4,9 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="relative overflow-hidden border-b border-zinc-200 bg-white"
+      className="relative overflow-hidden border-b border-white/50 bg-white/25 backdrop-blur-xl"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.03),transparent_40%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.05),transparent_40%),radial-gradient(circle_at_top_left,rgba(16,185,129,0.08),transparent_36%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 py-28">
         <div className="max-w-3xl">
@@ -29,7 +29,7 @@ export default function Features() {
           {FEATURE_GRID.map((feature, index) => (
             <div
               key={feature.title}
-              className="group relative overflow-hidden rounded-[32px] border border-zinc-200 bg-[#FAFAF8] p-8 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-[0_24px_60px_rgba(0,0,0,0.08)]"
+              className="group relative overflow-hidden rounded-[32px] border border-white/70 bg-white/55 p-8 shadow-[0_16px_50px_rgba(15,23,42,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-200 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)]"
             >
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,0,0,0.04),transparent_45%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 

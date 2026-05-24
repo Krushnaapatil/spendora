@@ -6,11 +6,11 @@ export default function TrustSection() {
   return (
     <section
       id="pricing-data"
-      className="relative overflow-hidden border-b border-zinc-200 bg-white scroll-mt-24"
+      className="relative overflow-hidden border-b border-white/50 bg-white/20 scroll-mt-24 backdrop-blur-xl"
     >
       {/* Background */}
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.03),transparent_45%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.05),transparent_45%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.05),transparent_38%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 py-28">
         <div className="grid gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
@@ -75,7 +75,7 @@ export default function TrustSection() {
           {/* Right */}
 
           <div className="relative">
-            <div className="rounded-[36px] border border-zinc-200 bg-[#FAFAF8] p-8 shadow-[0_20px_80px_rgba(0,0,0,0.08)]">
+            <div className="rounded-[36px] border border-white/70 bg-white/60 p-8 shadow-[0_20px_80px_rgba(15,23,42,0.08)] backdrop-blur-md">
               {/* Top */}
 
               <div className="flex items-center justify-between">

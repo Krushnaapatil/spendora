@@ -41,9 +41,9 @@ export default function InteractiveAudit() {
   return (
     <section
       id="example-audit"
-      className="relative overflow-hidden border-b border-zinc-200 bg-[linear-gradient(180deg,#fafaf8_0%,#ffffff_100%)]"
+      className="relative overflow-hidden border-b border-white/50 bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.08)_100%)] backdrop-blur-xl"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.03),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.05),transparent_50%),radial-gradient(circle_at_top_left,rgba(16,185,129,0.06),transparent_38%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 py-28">
         <div className="max-w-3xl">
@@ -63,7 +63,7 @@ export default function InteractiveAudit() {
         </div>
 
         <div className="mt-20 grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm">
+          <div className="rounded-[32px] border border-white/70 bg-white/60 p-8 shadow-[0_16px_50px_rgba(15,23,42,0.06)] backdrop-blur-md">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.2em] text-zinc-500">
@@ -88,7 +88,7 @@ export default function InteractiveAudit() {
               ].map((tool) => (
                 <div
                   key={tool.tool}
-                  className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-[#FAFAF8] px-5 py-4"
+                className="flex items-center justify-between rounded-2xl border border-white/70 bg-white/55 px-5 py-4 backdrop-blur-md"
                 >
                   <div>
                     <p className="font-semibold text-zinc-950">
@@ -114,10 +114,10 @@ export default function InteractiveAudit() {
             </button>
           </div>
 
-          <div className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-[0_24px_80px_rgba(0,0,0,0.08)]">
+          <div className="rounded-[32px] border border-white/70 bg-white/60 p-8 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-md">
             {!isAuditing && !auditComplete ? (
               <div className="flex h-full min-h-[500px] flex-col items-center justify-center text-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-zinc-200 bg-zinc-100">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/70 bg-white/60">
                   <div className="h-4 w-4 rounded-full bg-zinc-950" />
                 </div>
 
@@ -146,7 +146,7 @@ export default function InteractiveAudit() {
                   <div className="h-full w-2/3 animate-pulse rounded-full bg-zinc-950" />
                 </div>
 
-                <div className="mt-12 space-y-4 rounded-3xl border border-zinc-200 bg-[#FAFAF8] p-6">
+                <div className="mt-12 space-y-4 rounded-3xl border border-white/70 bg-white/55 p-6 backdrop-blur-md">
                   {LOADING_MESSAGES.slice(0, currentMessage + 1).map((message) => (
                     <div
                       key={message}
@@ -200,7 +200,7 @@ export default function InteractiveAudit() {
                   ].map((item) => (
                     <div
                       key={item.tool}
-                      className="rounded-2xl border border-zinc-200 bg-[#FAFAF8] p-5"
+                      className="rounded-2xl border border-white/70 bg-white/55 p-5 backdrop-blur-md"
                     >
                       <div className="flex items-start justify-between gap-6">
                         <div>

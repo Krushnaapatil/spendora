@@ -4,7 +4,8 @@ import {
 
 export default function Problem() {
   return (
-    <section className="border-b border-zinc-200 bg-white">
+    <section className="relative overflow-hidden border-b border-white/50 bg-white/20 backdrop-blur-xl">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.07),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.04),transparent_32%)]" />
       <div className="mx-auto max-w-7xl px-6 py-24">
         {/* Header */}
 
@@ -31,7 +32,7 @@ export default function Problem() {
             (card) => (
               <div
                 key={card.title}
-                className="rounded-3xl border border-zinc-200 bg-[#FAFAF8] p-8 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                className="rounded-[32px] border border-white/70 bg-white/55 p-8 shadow-[0_16px_50px_rgba(15,23,42,0.06)] backdrop-blur-md transition-all duration-200 hover:-translate-y-1 hover:border-zinc-200 hover:shadow-[0_24px_60px_rgba(15,23,42,0.12)]"
               >
                 <h3 className="text-2xl font-semibold text-zinc-950">
                   {card.title}

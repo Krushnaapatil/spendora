@@ -128,3 +128,26 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  @keyframes drift {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(2.5rem, -1.5rem, 0) scale(1.08);
+    }
+    100% {
+      transform: translate3d(-1.5rem, 1rem, 0) scale(0.98);
+    }
+  }
+
+  @keyframes grid-pan {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(5rem, 5rem, 0);
+    }
+  }
+}

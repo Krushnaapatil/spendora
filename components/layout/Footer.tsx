@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-zinc-200 bg-[#FAFAF8]">
+    <footer className="border-t border-white/50 bg-white/30 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-16 lg:grid-cols-[1.2fr_0.8fr]">
           <div>
@@ -19,13 +19,13 @@ export default function Footer() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <span className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm text-zinc-600">
+              <span className="rounded-full border border-white/70 bg-white/60 px-4 py-2 text-sm text-zinc-600 backdrop-blur-md">
                 Deterministic recommendations
               </span>
-              <span className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm text-zinc-600">
+              <span className="rounded-full border border-white/70 bg-white/60 px-4 py-2 text-sm text-zinc-600 backdrop-blur-md">
                 AI-generated summaries
               </span>
-              <span className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm text-zinc-600">
+              <span className="rounded-full border border-white/70 bg-white/60 px-4 py-2 text-sm text-zinc-600 backdrop-blur-md">
                 Public audit reports
               </span>
             </div>

@@ -49,7 +49,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] text-zinc-950">
+    <main className="min-h-screen bg-transparent text-zinc-950">
       <Navbar
         hasScrolled={hasScrolled}
         mobileMenuOpen={mobileMenuOpen}
