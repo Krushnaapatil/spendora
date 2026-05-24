@@ -6,6 +6,21 @@ Spendora is a **free AI tooling audit** for engineering and operations teams. It
 
 **One-liner:** Find wasted AI spend across Cursor, Copilot, Claude, ChatGPT, and more—in under 60 seconds.
 
+## Why This Approach
+
+Most AI cost management platforms target:
+- enterprise procurement
+- large finance teams
+- centralized IT governance
+
+Spendora instead focuses on:
+- lightweight onboarding
+- fast audits
+- operational clarity
+- immediate visibility
+
+The goal is to reduce friction and allow teams to discover optimization opportunities before introducing heavier workflows or sales processes.
+
 ## Target customer
 
 | Segment | Pain | Why Spendora |
@@ -45,3 +60,15 @@ Visit → Audit → Report → Email gate → Sign up → /audits dashboard
 2. Better recommendations (less generic)
 3. User interviews (`USER_INTERVIEWS.md`)
 4. Measure share → signup → repeat audit
+
+## Long-Term Expansion
+
+If retention proves strong, Spendora could expand into:
+- recurring audit monitoring
+- workspace dashboards
+- spend alerts
+- procurement visibility
+- AI tooling analytics
+- optimization benchmarking
+
+The long-term opportunity is not just audit generation, but continuous AI infrastructure visibility for growing teams.
